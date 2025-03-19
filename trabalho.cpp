@@ -8,24 +8,79 @@
 #include "meuconio.h"
 
 #define TF 100
-#define TFE 25
-#define TFC 20
-#define TFN 30
+
+struct typeData
+{
+    int dia, mes, ano;
+};
 
 struct typeConcurso
 {
-    
+    int idConc, numeroSorteado;
+    typeData data;
 };
 
 struct typeApostador
 {
-    
+    char CPF[12], nome[30], telefone[11];
 };
 
 struct typeAposta
 {
-    
+    int idAposta, idConc, qtdeNumApostado, numApostado;
+    char CPF[12];
 };
+
+void cadastroApostadores(typeApostador apostadores[TF], int &tl)
+{
+    char auxCPF[12];
+    system("cls");
+    printf("--- Cadastro de apostadores ---\n");
+    printf("CPF: ");
+    fflush(stdin);
+    gets(auxCPF);
+    while (tl < TF && strcmp(auxCPF, "\0") != 0)
+    {
+        strcpy(apostadores[tl].CPF, auxCPF);
+
+        printf("Nome: ");
+        fflush(stdin);
+        gets(apostadores[tl].nome);
+
+        printf("Telefone: ");
+        fflush(stdin);
+        gets(apostadores[tl].telefone);
+
+        tl++;
+
+        printf("------------------------------------------------\n");
+
+        printf("CPF: ");
+        fflush(stdin);
+        gets(auxCPF);
+    }
+}
+
+void exibirApostadores(typeApostador apostadores[TF], int tl)
+{
+    system("cls");
+    printf("--- Exibir Apostadores ---\n");
+    if (tl == 0)
+    {
+        printf("Nao ha nenhum apostador cadastrado");
+    }
+    else
+    {
+        for (int i = 0; i < tl; i++)
+        {
+            printf("\n-----------------------------------------------\n");
+            printf("CPF: %s\n", apostadores[i].CPF);
+            printf("Nome: %s\n", apostadores[i].nome);
+            printf("Fone: %s\n", apostadores[i].telefone);
+        }
+    }
+    getch();
+}
 
 char menuInicial(void)
 {
@@ -40,7 +95,7 @@ char menuInicial(void)
     return toupper(getche());
 }
 
-char menuInicial(void)
+char menuSubInicial(void)
 {
     system("cls");
     printf("\n-----MENU-----\n");
@@ -56,26 +111,87 @@ char menuInicial(void)
 
 int main(void)
 {
-
-    char opcao;
+    typeApostador apostadores[TF];
+    int tlp = 0;
+    char opcao, subOpcao;
     do
     {
         opcao = menuInicial();
         switch (opcao)
         {
         case 'A':
+            do
+            {
+                subOpcao = menuSubInicial();
+                switch (subOpcao)
+                {
+                case 'A':
 
+                    break;
+
+                case 'B':
+
+                    break;
+
+                case 'C':
+
+                    break;
+
+                case 'D':
+
+                    break;
+                }
+            } while (subOpcao != 27);
             break;
 
         case 'B':
+            do
+            {
+                subOpcao = menuSubInicial();
+                switch (subOpcao)
+                {
+                case 'A':
+                    cadastroApostadores(apostadores, tlp);
+                    break;
 
+                case 'B':
+                    exibirApostadores(apostadores, tlp);
+                    break;
+
+                case 'C':
+
+                    break;
+
+                case 'D':
+
+                    break;
+                }
+            } while (subOpcao != 27);
             break;
 
         case 'C':
+            do
+            {
+                subOpcao = menuSubInicial();
+                switch (subOpcao)
+                {
+                case 'A':
 
-            break;
+                    break;
 
-        default:
+                case 'B':
+
+                    break;
+
+                case 'C':
+
+                    break;
+
+                case 'D':
+
+                    break;
+                }
+            } while (subOpcao != 27);
             break;
         }
     } while (opcao != 27);
