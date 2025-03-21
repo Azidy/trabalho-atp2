@@ -131,7 +131,7 @@ void alterarDado(typeApostador apostadores[TF], int pos, int opr, int tl)
             strcpy(apostadores[pos].CPF, aux);
         else
         {
-            printf("\n[ERRO] O CPF [%d] ja existe e nao pode ser duplicado!", aux);
+            printf("\n[ERRO] O CPF [%s] ja existe e nao pode ser duplicado!", aux);
             getch();
         }
         break;
