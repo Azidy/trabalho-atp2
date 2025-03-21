@@ -5,7 +5,7 @@
 #include <ctype.h>
 #include <windows.h>
 #include <math.h>
-#include "meuconio.h"
+// #include "meuconio.h"
 
 #define TF 100
 
@@ -110,7 +110,63 @@ char menuAlterarApostadores()
     return toupper(getche());
 }
 
-void alterarDado(typeApostador apostadores[TF], int pos, int opr, int tl)
+void excluirApostadores(typeApostador apostadores[TF], int &tl)
+{
+    char auxCPF[12], opcao;
+    int pos;
+    system("cls");
+    printf("--- Exclusao de apostadores ---\n");
+    printf("\nDigite o CPF do apostador a ser excluido: ");
+    fflush(stdin);
+    gets(auxCPF);
+
+    if (strcmp(auxCPF, "\0") != 0)
+    {
+        pos = achouCPF(apostadores, tl, auxCPF);
+        if (pos == -1)
+        {
+            printf("\n[ERRO] O CPF nao foi encontrado!\n");
+            getch();
+        }
+
+        else
+        {
+            system("cls");
+            printf("--- Exclusao de apostadores ---\n");
+            printf("\nApostador sendo excluido:\n");
+            printf("\n------------------------\n");
+            printf("CPF: %s\n", apostadores[pos].CPF);
+            printf("Nome: %s\n", apostadores[pos].nome);
+            printf("Fone: %s\n", apostadores[pos].telefone);
+            printf("------------------------\n");
+            printf("\nDeseja mesmo excluir este apostador?\n");
+            printf("\n[S] Sim \t [N] Nao\n");
+
+            while (opcao != 'S' && opcao != 'N')
+            {
+                opcao = toupper(getch());
+            }
+
+            switch (opcao)
+            {
+            case 'S':
+                for (; pos < tl - 1; pos++)
+                    apostadores[pos] = apostadores[pos + 1];
+                tl--;
+                printf("\n[INFO] Exclusao concluida!");
+                getch();
+                break;
+            case 'N':
+                printf("\n[INFO] Exclusao cancalada!");
+                getch();
+                return;
+                break;
+            }
+        }
+    }
+}
+
+void alterarDadoApostadores(typeApostador apostadores[TF], int pos, int opr, int tl)
 {
     char aux[30];
     system("cls");
@@ -168,7 +224,7 @@ void alterarApostadores(typeApostador apostadores[TF], int tl)
         pos = achouCPF(apostadores, tl, auxCPF);
         if (pos == -1)
         {
-            printf("\n[ERRO] O CPF nao foi encontrado!\n");
+            printf("\n[ERRO] O CPF [%s] nao foi encontrado!\n", auxCPF);
             getch();
         }
 
@@ -188,13 +244,13 @@ void alterarApostadores(typeApostador apostadores[TF], int tl)
                 switch (opcao)
                 {
                 case 'A':
-                    alterarDado(apostadores, pos, 1, tl);
+                    alterarDadoApostadores(apostadores, pos, 1, tl);
                     break;
                 case 'B':
-                    alterarDado(apostadores, pos, 2, tl);
+                    alterarDadoApostadores(apostadores, pos, 2, tl);
                     break;
                 case 'C':
-                    alterarDado(apostadores, pos, 3, tl);
+                    alterarDadoApostadores(apostadores, pos, 3, tl);
                     break;
                 }
             } while (opcao != 27);
@@ -233,9 +289,10 @@ int main(void)
 {
     typeApostador apostadores[TF];
     int tlp = 0;
-    char opcao, subOpcao, opcaoAlterar;
+    char opcao, subOpcao;
     do
     {
+
         opcao = menuInicial();
         switch (opcao)
         {
@@ -283,7 +340,7 @@ int main(void)
                     break;
 
                 case 'D':
-
+                    excluirApostadores(apostadores, tlp);
                     break;
                 }
             } while (subOpcao != 27);
