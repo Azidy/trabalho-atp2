@@ -1,3 +1,9 @@
+// Codigo feitor por Diego Felipe Calesco e Heitor Franzo Justo
+
+/* --- Comentarios: ---
+-Fazer um SubMenu para Concurso, pois o concurso requer cadastro somente de ID e data, o sorteio é feito depois
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
@@ -16,7 +22,7 @@ struct typeData
 
 struct typeConcurso
 {
-    int idConc, numeroSorteado;
+    int idConc, numeroSorteado[5];
     typeData data;
 };
 
@@ -27,7 +33,7 @@ struct typeApostador
 
 struct typeAposta
 {
-    int idAposta, idConc, qtdeNumApostado, numApostado;
+    int idAposta, idConc, qtdeNumApostado, numApostado[10];
     char CPF[12];
 };
 
