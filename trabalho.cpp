@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 // Codigo feito por Diego Felippe da Fonseca Calesco e Heitor Franzo Justo
 
 /* --- Comentarios: ---
 -Fazer um SubMenu para Concurso, pois o concurso requer cadastro somente de ID e data, o sorteio sera feito depois
+=======
+// Codigo feitor por Diego Felipe Calesco e Heitor Franzo Justo
+
+/* --- Comentarios: ---
+-Fazer um SubMenu para Concurso, pois o concurso requer cadastro somente de ID e data, o sorteio é feito depois
+>>>>>>> b1f798a581e6b0cac6786d12f0f86668d6e69e96
 */
 
 #include <stdio.h>
@@ -122,6 +129,7 @@ void excluirApostadores(typeApostador apostadores[TF], int &tl)
     int pos;
     system("cls");
     printf("--- Exclusao de apostadores ---\n");
+<<<<<<< HEAD
     if(tl==0)
     {
     	printf("\n[ERRO] Nao ha nenhum apostador cadastrado");
@@ -180,6 +188,56 @@ void excluirApostadores(typeApostador apostadores[TF], int &tl)
 		    }
 		}
    
+=======
+    printf("\nDigite o CPF do apostador a ser excluido: ");
+    fflush(stdin);
+    gets(auxCPF);
+
+    if (strcmp(auxCPF, "\0") != 0)
+    {
+        pos = achouCPF(apostadores, tl, auxCPF);
+        if (pos == -1)
+        {
+            printf("\n[ERRO] O CPF nao foi encontrado!\n");
+            getch();
+        }
+
+        else
+        {
+            system("cls");
+            printf("--- Exclusao de apostadores ---\n");
+            printf("\nApostador sendo excluido:\n");
+            printf("\n------------------------\n");
+            printf("CPF: %s\n", apostadores[pos].CPF);
+            printf("Nome: %s\n", apostadores[pos].nome);
+            printf("Fone: %s\n", apostadores[pos].telefone);
+            printf("------------------------\n");
+            printf("\nDeseja mesmo excluir este apostador?\n");
+            printf("\n[S] Sim \t [N] Nao\n");
+
+            while (opcao != 'S' && opcao != 'N')
+            {
+                opcao = toupper(getch());
+            }
+
+            switch (opcao)
+            {
+            case 'S':
+                for (; pos < tl - 1; pos++)
+                    apostadores[pos] = apostadores[pos + 1];
+                tl--;
+                printf("\n[INFO] Exclusao concluida!");
+                getch();
+                break;
+            case 'N':
+                printf("\n[INFO] Exclusao cancalada!");
+                getch();
+                return;
+                break;
+            }
+        }
+    }
+>>>>>>> b1f798a581e6b0cac6786d12f0f86668d6e69e96
 }
 
 void alterarDadoApostadores(typeApostador apostadores[TF], int pos, int opr, int tl)
@@ -231,6 +289,7 @@ void alterarApostadores(typeApostador apostadores[TF], int tl)
     int pos;
     system("cls");
     printf("--- Alteracao de apostadores ---\n");
+<<<<<<< HEAD
     if(tl==0)
     {
     	printf("\n[ERRO] Nao ha nenhum apostador cadastrado");
@@ -284,6 +343,51 @@ void alterarApostadores(typeApostador apostadores[TF], int tl)
     
 }
 
+=======
+    printf("\nDigite o CPF do apostador a ser alterado: ");
+    fflush(stdin);
+    gets(auxCPF);
+
+    if (strcmp(auxCPF, "\0") != 0)
+    {
+        pos = achouCPF(apostadores, tl, auxCPF);
+        if (pos == -1)
+        {
+            printf("\n[ERRO] O CPF [%s] nao foi encontrado!\n", auxCPF);
+            getch();
+        }
+
+        else
+        {
+            do
+            {
+                system("cls");
+                printf("--- Alteracao de apostadores ---\n");
+                printf("\nApostador sendo alterado:\n");
+                printf("\n------------------------\n");
+                printf("CPF: %s\n", apostadores[pos].CPF);
+                printf("Nome: %s\n", apostadores[pos].nome);
+                printf("Fone: %s\n", apostadores[pos].telefone);
+                printf("------------------------\n");
+                opcao = menuAlterarApostadores();
+                switch (opcao)
+                {
+                case 'A':
+                    alterarDadoApostadores(apostadores, pos, 1, tl);
+                    break;
+                case 'B':
+                    alterarDadoApostadores(apostadores, pos, 2, tl);
+                    break;
+                case 'C':
+                    alterarDadoApostadores(apostadores, pos, 3, tl);
+                    break;
+                }
+            } while (opcao != 27);
+        }
+    }
+}
+
+>>>>>>> b1f798a581e6b0cac6786d12f0f86668d6e69e96
 char menuInicial(void)
 {
     system("cls");
