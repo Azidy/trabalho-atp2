@@ -1,7 +1,7 @@
 // Codigo feito por Diego Felippe da Fonseca Calesco e Heitor Franzo Justo
 
 /* --- Comentarios: ---
--ULTIMA ATUALIZACAO: 23/03/2025 3:24 PM
+-ULTIMA ATUALIZACAO: 23/03/2025 8:57 PM
 */
 
 #include <stdio.h>
@@ -382,7 +382,7 @@ void excluirApostadores(typeApostador apostadores[TF], int &tl)
             pos = achouCPF(apostadores, tl, auxCPF);
             if (pos == -1)
             {
-                printf("\n[ERRO] O CPF [%s] nao foi encontrado!\n"), auxCPF;
+                printf("\n[ERRO] O CPF [%s] nao foi encontrado!\n", auxCPF);
                 getch();
             }
 
