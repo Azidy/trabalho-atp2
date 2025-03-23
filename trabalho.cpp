@@ -49,12 +49,25 @@ int achouCPF(typeApostador apostadores[TF], int tl, char CPF[12])
         return -1;
 }
 
+int achouConcurso(typeConcurso concursos[TF], int tl, int idConc)
+{
+    int i = 0;
+    while (i < tl && concursos[i].idConc != idConc)
+        i++;
+
+    if (i < tl)
+        return i;
+    else
+        return -1;
+}
+
 void cadastroApostadores(typeApostador apostadores[TF], int &tl)
 {
     char auxCPF[12];
     system("cls");
     printf("--- Cadastro de apostadores ---\n");
-    printf("CPF: ");
+    printf("\n[INFO] Para sair do cadastro, apenas aperte [ENTER]\n");
+    printf("\nCPF: ");
     fflush(stdin);
     gets(auxCPF);
     while (tl < TF && strcmp(auxCPF, "\0") != 0)
@@ -78,9 +91,40 @@ void cadastroApostadores(typeApostador apostadores[TF], int &tl)
             printf("\n[ERRO] O CPF [%s] ja existe e nao pode ser duplicado!\n\n", auxCPF);
 
         printf("------------------------------------------------\n");
-        printf("CPF: ");
+        printf("\nCPF: ");
         fflush(stdin);
         gets(auxCPF);
+    }
+}
+
+void cadastroConcursos(typeConcurso concursos[TF], int &tl)
+{
+    int auxId;
+    system("cls");
+    printf("--- Cadastro de concursos ---\n");
+    printf("\n[INFO] Para sair do cadastro, digite [0]\n");
+    printf("\nId. do concurso: ");
+    fflush(stdin);
+    scanf("%d",&auxId);
+    while (tl < TF && auxId != 0)
+    {
+        if (achouConcurso(concursos, tl, auxId) == -1)
+        {
+			concursos[tl].idConc = auxId;
+            printf("\nData do concurso: [dd] [mm] [aaaa]: ");
+            fflush(stdin);
+            scanf("%d %d %d", &concursos[tl].data.dia, &concursos[tl].data.mes, &concursos[tl].data.ano);
+
+            tl++;
+        }
+
+        else
+            printf("\n[ERRO] O concurso num. [%d] ja existe e nao pode ser duplicado!\n\n", auxId);
+
+        printf("\n------------------------------------------------\n");
+        printf("\nId. do concurso: ");
+        fflush(stdin);
+        scanf("%d",&auxId);
     }
 }
 
@@ -103,6 +147,199 @@ void exibirApostadores(typeApostador apostadores[TF], int tl)
         }
     }
     getch();
+}
+
+void exibirConcursos(typeConcurso concursos[TF], int tl)
+{
+	system("cls");
+    printf("--- Exibir Concursos ---\n");
+    if (tl == 0)
+    {
+        printf("\n[ERRO] Nao ha nenhum concurso cadastrado!");
+    }
+    else
+    {
+        for (int i = 0; i < tl; i++)
+        {
+            printf("\n-----------------------------------------------\n");
+            printf("Id do concurso: %d\n", concursos[i].idConc);
+            printf("Data do concurso: %d/%d/%d\n", concursos[i].data.dia, concursos[i].data.mes, concursos[i].data.ano);
+        }
+    }
+    getch();
+}
+
+char menuAlterarConcursos()
+{
+	printf("\n[A] Alterar Id\n");
+    printf("[B] Alterar Data\n");
+    printf("[Esc] Sair\n");
+    printf("Opcao desejada: ");
+    fflush(stdin);
+    return toupper(getche());
+}
+
+alterarDadoConcursos(typeConcurso concursos[TF], int pos, int opr, int tl)
+{
+	int aux;
+    system("cls");
+    printf("--- Alteracao de concursos ---\n");
+    printf("\nConcurso sendo alterado:\n");
+    printf("\n------------------------\n");
+    printf("Id do concurso: %d\n", concursos[pos].idConc);
+	printf("Data do concurso: %d/%d/%d\n", concursos[pos].data.dia, concursos[pos].data.mes, concursos[pos].data.ano);
+    printf("------------------------\n");
+
+    switch (opr)
+    {
+	    case 1:
+	    	printf("\n[INFO] Para cancelar alteracao, digite [0]\n");
+	        printf("\nId atualizado: ");
+	        fflush(stdin);
+	        scanf("%d",&aux);
+	        if(aux!=0)
+	        {
+	        	if (achouConcurso(concursos, tl, aux) == -1)
+		            concursos[pos].idConc = aux;
+		        else
+		        {
+		            printf("\n[ERRO] O concurso num. [%d] ja existe e nao pode ser duplicado!\n\n", aux);
+		            getch();
+		        }
+			}
+	        
+	        break;
+	    case 2:
+	    	int dia, mes, ano;
+	    	printf("\n[INFO] Para cancelar alteracao, digite [0 0 0]\n");
+	        printf("\nData atualizada: ");
+	        fflush(stdin);
+	        scanf("%d %d %d",&dia, &mes, &ano);
+	        if (dia != 0 && mes != 0 && ano != 0)
+	            concursos[pos].data.dia = dia;
+	            concursos[pos].data.mes = mes;
+	            concursos[pos].data.ano = ano;
+	        break;
+    }
+}
+
+void alterarConcursos(typeConcurso concursos[TF], int tl)
+{
+	char opcao;
+    int auxId, pos;
+    system("cls");
+    printf("--- Alteracao de concursos ---\n");
+    if(tl==0)
+    {
+    	printf("\n[ERRO] Nao ha nenhum concurso cadastrado!");
+    	getch();
+	}
+    	
+    else
+    	{
+    		printf("\nDigite o Id do concurso a ser alterado: ");
+		    fflush(stdin);
+		    scanf("%d",&auxId);
+		
+		    if (auxId!=0)
+		    {
+		        pos = achouConcurso(concursos, tl, auxId);
+		        if (pos == -1)
+		        {
+		            printf("\n[ERRO] O concurso num. [%d] nao foi encontrado!\n", auxId);
+		            getch();
+		        }
+		
+		        else
+		        {
+		            do
+		            {
+		                system("cls");
+		                printf("--- Alteracao de concursos ---\n");
+		                printf("\nConcurso sendo alterado:\n");
+		                printf("\n------------------------\n");
+		                printf("Id do concurso: %d\n", concursos[pos].idConc);
+          				printf("Data do concurso: %d/%d/%d\n", concursos[pos].data.dia, concursos[pos].data.mes, concursos[pos].data.ano);
+		                printf("------------------------\n");
+		                opcao = menuAlterarConcursos();
+		                switch (opcao)
+		                {
+		                case 'A':
+		                    alterarDadoConcursos(concursos, pos, 1, tl);
+		                    break;
+		                case 'B':
+		                    alterarDadoConcursos(concursos, pos, 2, tl);
+		                    break;
+		                }
+		            } while (opcao != 27);
+		        }
+		    }
+		}
+}
+
+void excluirConcursos(typeConcurso concursos[TF], int &tl)
+{
+	char opcao;
+    int pos, auxId;
+    system("cls");
+    printf("--- Exclusao de concursos ---\n");
+    if(tl==0)
+    {
+    	printf("\n[ERRO] Nao ha nenhum concurso cadastrado!");
+    	getch();
+	}
+	
+	else
+		{
+			printf("\n[INFO] Para sair da exclusao, digite [0]\n");
+			printf("\nDigite o Id do concurso a ser excluido: ");
+		    fflush(stdin);
+		    scanf("%d",&auxId);
+		
+		    if (auxId != 0)
+		    {
+		        pos = achouConcurso(concursos, tl, auxId);
+		        if (pos == -1)
+		        {
+		            printf("\n[ERRO] O concurso [%d] nao foi encontrado!\n",auxId);
+		            getch();
+		        }
+		
+		        else
+		        {
+		            system("cls");
+		            printf("--- Exclusao de apostadores ---\n");
+		            printf("\nConcurso sendo excluido:\n");
+		          	 printf("\n------------------------\n");
+	                printf("Id do concurso: %d\n", concursos[pos].idConc);
+      				printf("Data do concurso: %d/%d/%d\n", concursos[pos].data.dia, concursos[pos].data.mes, concursos[pos].data.ano);
+	                printf("------------------------\n");
+		            printf("\nDeseja mesmo excluir este concurso?\n");
+		            printf("\n[S] Sim \t [N] Nao\n");
+		
+		            while (opcao != 'S' && opcao != 'N')
+		            {
+		                opcao = toupper(getch());
+		            }
+		
+		            switch (opcao)
+		            {
+			            case 'S':
+			                for (; pos < tl - 1; pos++)
+			                    concursos[pos] = concursos[pos + 1];
+			                tl--;
+			                printf("\n[INFO] Exclusao concluida!");
+			                getch();
+			                break;
+			            case 'N':
+			                printf("\n[INFO] Exclusao cancalada!");
+			                getch();
+			                return;
+			                break;
+		            }
+		        }
+		    }
+		}
 }
 
 char menuAlterarApostadores()
@@ -139,7 +376,7 @@ void excluirApostadores(typeApostador apostadores[TF], int &tl)
 		        pos = achouCPF(apostadores, tl, auxCPF);
 		        if (pos == -1)
 		        {
-		            printf("\n[ERRO] O CPF nao foi encontrado!\n");
+		            printf("\n[ERRO] O CPF [%s] nao foi encontrado!\n"),auxCPF;
 		            getch();
 		        }
 		
@@ -187,6 +424,7 @@ void alterarDadoApostadores(typeApostador apostadores[TF], int pos, int opr, int
     char aux[30];
     system("cls");
     printf("--- Alteracao de apostadores ---\n");
+    printf("\nApostador sendo alterado:\n");
     printf("\n------------------------\n");
     printf("CPF: %s\n", apostadores[pos].CPF);
     printf("Nome: %s\n", apostadores[pos].nome);
@@ -195,34 +433,40 @@ void alterarDadoApostadores(typeApostador apostadores[TF], int pos, int opr, int
 
     switch (opr)
     {
-    case 1:
-        printf("\nCPF atualizado: ");
-        fflush(stdin);
-        gets(aux);
-        if (achouCPF(apostadores, tl, aux) == -1)
-            strcpy(apostadores[pos].CPF, aux);
-        else
-        {
-            printf("\n[ERRO] O CPF [%s] ja existe e nao pode ser duplicado!", aux);
-            getch();
-        }
-        break;
-    case 2:
-        printf("\nNome atualizado: ");
-        fflush(stdin);
-        gets(aux);
-        if (strcmp(aux, "\0") != 0)
-            strcpy(apostadores[pos].nome, aux);
-        break;
-
-    case 3:
-        printf("\nTelefone atualizado: ");
-        fflush(stdin);
-        gets(aux);
-        if (strcmp(aux, "\0") != 0)
-            strcpy(apostadores[pos].telefone, aux);
-        break;
-    }
+	    case 1:
+	    	printf("\n[INFO] Para cancelar alteracao, apenas aperte [ENTER]\n");
+	        printf("\nCPF atualizado: ");
+	        fflush(stdin);
+	        gets(aux);
+	        if(strcmp(aux, "\0") != 0)
+	        {
+	        	if (achouCPF(apostadores, tl, aux) == -1)
+	            	strcpy(apostadores[pos].CPF, aux);
+		        else
+		        {
+		            printf("\n[ERRO] O CPF [%s] ja existe e nao pode ser duplicado!", aux);
+		            getch();
+		        }
+			}
+	        break;
+	    case 2:
+	    	printf("\n[INFO] Para cancelar alteracao, apenas aperte [ENTER]\n");
+	        printf("\nNome atualizado: ");
+	        fflush(stdin);
+	        gets(aux);
+	        if (strcmp(aux, "\0") != 0)
+	            strcpy(apostadores[pos].nome, aux);
+	        break;
+	
+	    case 3:
+	    	printf("\n[INFO] Para cancelar alteracao, apenas aperte [ENTER]\n");
+	        printf("\nTelefone atualizado: ");
+	        fflush(stdin);
+	        gets(aux);
+	        if (strcmp(aux, "\0") != 0)
+	            strcpy(apostadores[pos].telefone, aux);
+	        break;
+	    }
 }
 
 void alterarApostadores(typeApostador apostadores[TF], int tl)
@@ -314,7 +558,8 @@ char menuSubInicial(char msg[15])
 int main(void)
 {
     typeApostador apostadores[TF];
-    int tlp = 0;
+    typeConcurso concursos[TF];
+    int tlp = 0, tlc = 0;
     char opcao, subOpcao;
     do
     {
@@ -329,20 +574,20 @@ int main(void)
                 switch (subOpcao)
                 {
                 case 'A':
-
-                    break;
+						cadastroConcursos(concursos, tlc);
+                   		break;
 
                 case 'B':
-
-                    break;
+						exibirConcursos(concursos, tlc);
+                    	break;
 
                 case 'C':
-
-                    break;
+						alterarConcursos(concursos, tlc);
+                   		break;
 
                 case 'D':
-
-                    break;
+						excluirConcursos(concursos, tlc);
+                   		break;
                 }
             } while (subOpcao != 27);
             break;
