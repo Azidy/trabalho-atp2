@@ -153,9 +153,10 @@ void realizarConcurso(typeConcurso concursos[TF], int tl)
             else
             {
                 for (int i = 0; i < 5; i++)
-                {
                     concursos[pos].numeroSorteado[i] = (rand() % 10) + 1;
-                }
+
+                printf("\n[INFO] Os numeros do concurso num. [%d] foram sorteados, verifique em 'Consultar'!\n", auxId);
+                getch();
             }
         }
     }
