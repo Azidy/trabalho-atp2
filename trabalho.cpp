@@ -24,7 +24,7 @@ struct typeData
 
 struct typeConcurso
 {
-    int idConc, numeroSorteado[5], status=0;
+    int idConc, numeroSorteado[5], status = 0;
     typeData data;
 };
 
@@ -87,7 +87,7 @@ int achouNumApostado(int numApostadoAnalise[10], int tl, int numApostado)
         return -1;
 }
 
-void apostarNum(int qtde, typeAposta apostas[TF], int tl)
+void apostarNum(int qtde, typeAposta apostas[TF], int tl, int &num1apos, int &num2apos, int &num3apos, int &num4apos, int &num5apos, int &num6apos, int &num7apos, int &num8apos, int &num9apos, int &num10apos)
 {
     int numApostado, i, cod;
     for (i = 0; i < qtde; i++)
@@ -107,6 +107,48 @@ void apostarNum(int qtde, typeAposta apostas[TF], int tl)
             {
                 if (achouNumApostado(apostas[tl].numApostado, i, numApostado) == -1)
                 {
+                    switch (numApostado)
+                    {
+                    case 1:
+                        num1apos++;
+                        break;
+
+                    case 2:
+                        num2apos++;
+                        break;
+
+                    case 3:
+                        num3apos++;
+                        break;
+
+                    case 4:
+                        num4apos++;
+                        break;
+
+                    case 5:
+                        num5apos++;
+                        break;
+
+                    case 6:
+                        num6apos++;
+                        break;
+
+                    case 7:
+                        num7apos++;
+                        break;
+
+                    case 8:
+                        num8apos++;
+                        break;
+
+                    case 9:
+                        num9apos++;
+                        break;
+
+                    case 10:
+                        num10apos++;
+                        break;
+                    }
                     apostas[tl].numApostado[i] = numApostado;
                     cod = 1;
                 }
@@ -125,7 +167,7 @@ void apostarNum(int qtde, typeAposta apostas[TF], int tl)
     }
 }
 
-void realizarConcurso(typeConcurso concursos[TF], int tl)
+void realizarConcurso(typeConcurso concursos[TF], int tl, int &num1sort, int &num2sort, int &num3sort, int &num4sort, int &num5sort, int &num6sort, int &num7sort, int &num8sort, int &num9sort, int &num10sort)
 {
     int auxId, pos;
     system("cls");
@@ -153,20 +195,70 @@ void realizarConcurso(typeConcurso concursos[TF], int tl)
 
             else
             {
-            	if(concursos[pos].status == 0)
-            	{
-            		concursos[pos].status = 1;
-               		for (int i = 0; i < 5; i++)
-                   		concursos[pos].numeroSorteado[i] = (rand() % 10) + 1;
+                if (concursos[pos].status == 0)
+                {
+                    concursos[pos].status = 1;
+                    for (int i = 0; i < 5; i++)
+                        concursos[pos].numeroSorteado[i] = (rand() % 10) + 1;
 
-                	printf("\n[INFO] Os numeros do concurso num. [%d] foram sorteados, verifique em 'Consultar'!\n", auxId);
-                	getch();
-            	}
-            	else
-            	{
-            		printf("\n[ERRO] Os numeros do concurso num. [%d] ja foram sorteados, verifique em 'Consultar'!\n", auxId);
-                	getch();
-            	}
+                    for (int x = 0; x < 5; x++)
+                    {
+                        int temp;
+                        temp = concursos[pos].numeroSorteado[x];
+
+                        switch (temp)
+                    {
+                    case 1:
+                        num1sort++;
+                        break;
+
+                    case 2:
+                        num2sort++;
+                        break;
+
+                    case 3:
+                        num3sort++;
+                        break;
+
+                    case 4:
+                        num4sort++;
+                        break;
+
+                    case 5:
+                        num5sort++;
+                        break;
+
+                    case 6:
+                        num6sort++;
+                        break;
+
+                    case 7:
+                        num7sort++;
+                        break;
+
+                    case 8:
+                        num8sort++;
+                        break;
+
+                    case 9:
+                        num9sort++;
+                        break;
+
+                    case 10:
+                        num10sort++;
+                        break;
+                    }
+                    }
+                    
+
+                    printf("\n[INFO] Os numeros do concurso num. [%d] foram sorteados, verifique em 'Consultar'!\n", auxId);
+                    getch();
+                }
+                else
+                {
+                    printf("\n[ERRO] Os numeros do concurso num. [%d] ja foram sorteados, verifique em 'Consultar'!\n", auxId);
+                    getch();
+                }
             }
         }
     }
@@ -335,10 +427,10 @@ void cadastroApostadores(typeApostador apostadores[TF], int &tl)
 
         else
         {
-        	printf("\n[ERRO] O CPF [%s] ja existe e nao pode ser duplicado!\n\n", auxCPF);
+            printf("\n[ERRO] O CPF [%s] ja existe e nao pode ser duplicado!\n\n", auxCPF);
             getch();
         }
-            
+
         cabecalhoCadastro("apostadores", 1);
         printf("\n------------------------------------------------\n");
         printf("\nCPF: ");
@@ -382,10 +474,10 @@ void cadastroConcursos(typeConcurso concursos[TF], int &tl)
 
         else
         {
-        	printf("\n[ERRO] O concurso num. [%d] ja existe e nao pode ser duplicado!\n\n", auxId);
+            printf("\n[ERRO] O concurso num. [%d] ja existe e nao pode ser duplicado!\n\n", auxId);
             getch();
         }
-         
+
         cabecalhoCadastro("apostadores", 2);
         printf("\n------------------------------------------------\n");
         printf("\nId. do concurso: ");
@@ -394,7 +486,7 @@ void cadastroConcursos(typeConcurso concursos[TF], int &tl)
     }
 }
 
-void cadastroApostasDados(typeAposta apostas[TF], int &tl, int Id, char apostador[12], int concurso)
+void cadastroApostasDados(typeAposta apostas[TF], int &tl, int Id, char apostador[12], int concurso, int &num1apos, int &num2apos, int &num3apos, int &num4apos, int &num5apos, int &num6apos, int &num7apos, int &num8apos, int &num9apos, int &num10apos)
 {
     int qtde;
     cabecalhoCadastroAposta(1, apostador, concurso);
@@ -405,7 +497,7 @@ void cadastroApostasDados(typeAposta apostas[TF], int &tl, int Id, char apostado
     {
         apostas[tl].qtdeNumApostado = qtde;
         cabecalhoCadastroAposta(1, apostador, concurso);
-        apostarNum(qtde, apostas, tl);
+        apostarNum(qtde, apostas, tl, num1apos, num2apos, num3apos, num4apos, num5apos, num6apos, num7apos, num8apos, num9apos, num10apos);
         apostas[tl].idConc = concurso;
         apostas[tl].idAposta = Id;
         strcpy(apostas[tl].CPF, apostador);
@@ -418,7 +510,7 @@ void cadastroApostasDados(typeAposta apostas[TF], int &tl, int Id, char apostado
     }
 }
 
-void cadastroApostas(typeAposta apostas[TF], int &tl, typeConcurso concursos[TF], int tlc, typeApostador apostadores[TF], int tlp)
+void cadastroApostas(typeAposta apostas[TF], int &tl, typeConcurso concursos[TF], int tlc, typeApostador apostadores[TF], int tlp, int &num1apos, int &num2apos, int &num3apos, int &num4apos, int &num5apos, int &num6apos, int &num7apos, int &num8apos, int &num9apos, int &num10apos)
 {
     int auxId, pos;
     cabecalhoCadastroAposta(0, "", 0);
@@ -450,7 +542,7 @@ void cadastroApostas(typeAposta apostas[TF], int &tl, typeConcurso concursos[TF]
                         pos = achouConcurso(concursos, tlc, auxConc);
                         if (pos != -1)
                         {
-                            cadastroApostasDados(apostas, tl, auxId, auxCPF, auxConc);
+                            cadastroApostasDados(apostas, tl, auxId, auxCPF, auxConc, num1apos, num2apos, num3apos, num4apos, num5apos, num6apos, num7apos, num8apos, num9apos, num10apos);
                         }
                         else
                         {
@@ -466,10 +558,10 @@ void cadastroApostas(typeAposta apostas[TF], int &tl, typeConcurso concursos[TF]
                 }
                 else
                 {
-                	printf("\n[ERRO] A aposta num. [%d] ja existe e nao pode ser duplicado!\n\n", auxId);
+                    printf("\n[ERRO] A aposta num. [%d] ja existe e nao pode ser duplicado!\n\n", auxId);
                     getch();
                 }
-                
+
                 cabecalhoCadastroAposta(0, "", 0);
                 printf("\n[INFO] Para sair do cadastro de apostas, digite [0]\n");
                 printf("\n-----------------------------------------------------------\n");
@@ -1084,6 +1176,8 @@ int main(void)
     typeConcurso concursos[TF];
     typeAposta apostas[TF];
     int tlp = 0, tlc = 0, tla = 0;
+    int num1apos = 0, num2apos = 0, num3apos = 0, num4apos = 0, num5apos = 0, num6apos = 0, num7apos = 0, num8apos = 0, num9apos = 0, num10apos = 0;
+    int num1sort = 0, num2sort = 0, num3sort = 0, num4sort = 0, num5sort = 0, num6sort = 0, num7sort = 0, num8sort = 0, num9sort = 0, num10sort = 0;
     char opcao, subOpcao;
     do
     {
@@ -1114,7 +1208,7 @@ int main(void)
                     break;
 
                 case 'E':
-                    realizarConcurso(concursos, tlc);
+                    realizarConcurso(concursos, tlc, num1sort, num2sort, num3sort, num4sort, num5sort, num6sort, num7sort, num8sort, num9sort, num10sort);
                     break;
                 }
             } while (subOpcao != 27);
@@ -1152,7 +1246,7 @@ int main(void)
                 switch (subOpcao)
                 {
                 case 'A':
-                    cadastroApostas(apostas, tla, concursos, tlc, apostadores, tlp);
+                    cadastroApostas(apostas, tla, concursos, tlc, apostadores, tlp, num1apos, num2apos, num3apos, num4apos, num5apos, num6apos, num7apos, num8apos, num9apos, num10apos);
                     break;
 
                 case 'B':
