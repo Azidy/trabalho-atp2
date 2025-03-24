@@ -2,6 +2,7 @@
 
 /* --- Comentarios: ---
 -ULTIMA ATUALIZACAO: 24/03/2025 03:03 AM
+-Resultado: Informar num do concurso, verificar concurso e status, pegar infos de apostas com o mesmo numero de concurso, comparar numeros apostados com os sorteados, informar vencedor
 */
 
 #include <stdio.h>
@@ -12,7 +13,7 @@
 #include <windows.h>
 #include <math.h>
 #include <time.h>
-// #include "meuconio.h"
+#include "conio2.h"
 
 #define TF 100
 
@@ -23,7 +24,7 @@ struct typeData
 
 struct typeConcurso
 {
-    int idConc, numeroSorteado[5];
+    int idConc, numeroSorteado[5], status=0;
     typeData data;
 };
 
@@ -152,11 +153,20 @@ void realizarConcurso(typeConcurso concursos[TF], int tl)
 
             else
             {
-                for (int i = 0; i < 5; i++)
-                    concursos[pos].numeroSorteado[i] = (rand() % 10) + 1;
+            	if(concursos[pos].status == 0)
+            	{
+            		concursos[pos].status = 1;
+               		for (int i = 0; i < 5; i++)
+                   		concursos[pos].numeroSorteado[i] = (rand() % 10) + 1;
 
-                printf("\n[INFO] Os numeros do concurso num. [%d] foram sorteados, verifique em 'Consultar'!\n", auxId);
-                getch();
+                	printf("\n[INFO] Os numeros do concurso num. [%d] foram sorteados, verifique em 'Consultar'!\n", auxId);
+                	getch();
+            	}
+            	else
+            	{
+            		printf("\n[ERRO] Os numeros do concurso num. [%d] ja foram sorteados, verifique em 'Consultar'!\n", auxId);
+                	getch();
+            	}
             }
         }
     }
@@ -212,7 +222,6 @@ char menuSubAposta()
     printf("[B] Consultar\n");
     printf("[C] Alterar\n");
     printf("[D] Excluir\n");
-    printf("[E] Realizar Sorteio\n");
     printf("[Esc] Sair\n");
     printf("Opcao desejada: ");
     fflush(stdin);
@@ -325,8 +334,11 @@ void cadastroApostadores(typeApostador apostadores[TF], int &tl)
         }
 
         else
-            printf("\n[ERRO] O CPF [%s] ja existe e nao pode ser duplicado!\n\n", auxCPF);
-
+        {
+        	printf("\n[ERRO] O CPF [%s] ja existe e nao pode ser duplicado!\n\n", auxCPF);
+            getch();
+        }
+            
         cabecalhoCadastro("apostadores", 1);
         printf("\n------------------------------------------------\n");
         printf("\nCPF: ");
@@ -369,8 +381,11 @@ void cadastroConcursos(typeConcurso concursos[TF], int &tl)
         }
 
         else
-            printf("\n[ERRO] O concurso num. [%d] ja existe e nao pode ser duplicado!\n\n", auxId);
-
+        {
+        	printf("\n[ERRO] O concurso num. [%d] ja existe e nao pode ser duplicado!\n\n", auxId);
+            getch();
+        }
+         
         cabecalhoCadastro("apostadores", 2);
         printf("\n------------------------------------------------\n");
         printf("\nId. do concurso: ");
@@ -450,8 +465,11 @@ void cadastroApostas(typeAposta apostas[TF], int &tl, typeConcurso concursos[TF]
                     }
                 }
                 else
-                    printf("\n[ERRO] A aposta num. [%d] ja existe e nao pode ser duplicado!\n\n", auxId);
-
+                {
+                	printf("\n[ERRO] A aposta num. [%d] ja existe e nao pode ser duplicado!\n\n", auxId);
+                    getch();
+                }
+                
                 cabecalhoCadastroAposta(0, "", 0);
                 printf("\n[INFO] Para sair do cadastro de apostas, digite [0]\n");
                 printf("\n-----------------------------------------------------------\n");
