@@ -62,12 +62,36 @@ int achouConcurso(typeConcurso concursos[TF], int tl, int idConc)
         return -1;
 }
 
+int achouAposta(typeAposta apostas[TF], int tl, int idAposta)
+{
+    int i = 0;
+    while (i < tl && apostas[i].idAposta != idAposta)
+        i++;
+
+    if (i < tl)
+        return i;
+    else
+        return -1;
+}
+
+int achouNumApostado(int numApostadoAnalise[10], int tl, int numApostado)
+{
+    int i = 0;
+    while (i < tl && numApostadoAnalise[i] != numApostado)
+        i++;
+
+    if (i < tl)
+        return i;
+    else
+        return -1;
+}
+
 void cadastroApostadores(typeApostador apostadores[TF], int &tl)
 {
-    char auxCPF[12];
+    char auxCPF[12], auxNome[30], auxTel[12];
     system("cls");
     printf("--- Cadastro de apostadores ---\n");
-    printf("\n[INFO] Para sair do cadastro, apenas aperte [ENTER]\n");
+    printf("\n[INFO] Para sair do cadastro de apostadores, apenas aperte [ENTER]\n");
     printf("\nCPF: ");
     fflush(stdin);
     gets(auxCPF);
@@ -75,23 +99,35 @@ void cadastroApostadores(typeApostador apostadores[TF], int &tl)
     {
         if (achouCPF(apostadores, tl, auxCPF) == -1)
         {
-            strcpy(apostadores[tl].CPF, auxCPF);
-
             printf("Nome: ");
             fflush(stdin);
-            gets(apostadores[tl].nome);
+            gets(auxNome);
 
             printf("Telefone: ");
             fflush(stdin);
-            gets(apostadores[tl].telefone);
+            gets(auxTel);
 
-            tl++;
+            if (strcmp(auxNome, "\0") != 0 && strcmp(auxTel, "\0") != 0)
+            {
+                strcpy(apostadores[tl].CPF, auxCPF);
+                strcpy(apostadores[tl].nome, auxNome);
+                strcpy(apostadores[tl].telefone, auxTel);
+                tl++;
+            }
+            else
+            {
+                printf("\n[ERRO] Um ou mais campos estao vazios!");
+                getch();
+            }
         }
 
         else
             printf("\n[ERRO] O CPF [%s] ja existe e nao pode ser duplicado!\n\n", auxCPF);
 
-        printf("------------------------------------------------\n");
+        system("cls");
+        printf("--- Cadastro de apostadores ---\n");
+        printf("\n[INFO] Para sair do cadastro de apostadores, apenas digite [ENTER]\n");
+        printf("\n------------------------------------------------\n");
         printf("\nCPF: ");
         fflush(stdin);
         gets(auxCPF);
@@ -100,10 +136,10 @@ void cadastroApostadores(typeApostador apostadores[TF], int &tl)
 
 void cadastroConcursos(typeConcurso concursos[TF], int &tl)
 {
-    int auxId;
+    int auxId, dia, mes, ano;
     system("cls");
     printf("--- Cadastro de concursos ---\n");
-    printf("\n[INFO] Para sair do cadastro, digite [0]\n");
+    printf("\n[INFO] Para sair do cadastro de concursos, digite [0]\n");
     printf("\nId. do concurso: ");
     fflush(stdin);
     scanf("%d", &auxId);
@@ -111,26 +147,198 @@ void cadastroConcursos(typeConcurso concursos[TF], int &tl)
     {
         if (achouConcurso(concursos, tl, auxId) == -1)
         {
-            concursos[tl].idConc = auxId;
             printf("\nData do concurso: [dd] [mm] [aaaa]: ");
             fflush(stdin);
-            scanf("%d %d %d", &concursos[tl].data.dia, &concursos[tl].data.mes, &concursos[tl].data.ano);
-            for (int i = 0; i < 5; i++)
+            scanf("%d %d %d", &dia, &mes, &ano);
+            if (dia != 0 && mes != 0 && ano != 0)
             {
-                concursos[i].numeroSorteado[i] = 0;
+                concursos[tl].idConc = auxId;
+                concursos[tl].data.dia = dia;
+                concursos[tl].data.mes = mes;
+                concursos[tl].data.ano = ano;
+                for (int i = 0; i < 5; i++)
+                    concursos[i].numeroSorteado[i] = 0;
+
+                tl++;
             }
 
-            tl++;
+            else
+            {
+                printf("\n[ERRO] Um ou mais campos estao vazios!");
+                getch();
+            }
         }
 
         else
             printf("\n[ERRO] O concurso num. [%d] ja existe e nao pode ser duplicado!\n\n", auxId);
 
+        system("cls");
+        printf("--- Cadastro de concursos ---\n");
+        printf("\n[INFO] Para sair do cadastro de concursos, digite [0]\n");
         printf("\n------------------------------------------------\n");
         printf("\nId. do concurso: ");
         fflush(stdin);
         scanf("%d", &auxId);
     }
+}
+
+void cadastroApostasDados(typeAposta apostas[TF], int &tl, int Id, char apostador[12], int concurso)
+{
+    int qtde;
+    system("cls");
+    printf("--- Cadastro de apostas ---\n");
+    printf("\n---------------------------\n");
+    printf("CPF do apostador: %s\n", apostador);
+    printf("Id do concurso: %d\n", concurso);
+    printf("---------------------------\n");
+
+    printf("\n[INFO] Para sair do cadastro de apostas, digite [0]\n");
+    printf("\nQuantos numeros deseja apostar? [Aposte entre 5 a 10 numeros]: ");
+    scanf("%d", &qtde);
+    if (qtde > 4 && qtde < 11)
+    {
+        apostas[tl].qtdeNumApostado = qtde;
+        int i, numApostado, cod;
+        for (i = 0; i < qtde; i++)
+        {
+            cod = 0;
+            do
+            {
+                system("cls");
+                printf("--- Cadastro de apostas ---\n");
+                printf("\n-----------------------------------------------------------\n");
+                printf("CPF do apostador: %s\n", apostador);
+                printf("Id do concurso: %d\n", concurso);
+                printf("-------------------------------------------------------------\n");
+                printf("\n[INFO] Voce pode apostar numeros de 1 a 10, sem repeti-los!\n");
+                printf("\n-----------------------------------------------------------\n");
+                printf("Digite sua aposta num.[%d]: ", i + 1);
+                scanf("%d", &numApostado);
+
+                if (numApostado > 0 && numApostado < 11)
+                {
+                    if (achouNumApostado(apostas[tl].numApostado, i, numApostado) == -1)
+                    {
+                        apostas[tl].numApostado[i] = numApostado;
+                        apostas[tl].idConc = concurso;
+                        apostas[tl].idAposta = Id;
+                        strcpy(apostas[tl].CPF, apostador);
+                        cod = 1;
+                    }
+                    else
+                    {
+                        printf("\n[ERRO] O numero [%d] ja foi digitado e nao pode ser repitido!\n", numApostado);
+                        getch();
+                    }
+                }
+                else
+                    printf("\n[ERRO] Digite numeros de 1 a 10!\n");
+            } while (cod == 0);
+        }
+        tl++;
+    }
+    else
+    {
+        printf("\n[ERRO] Digite a qtde. solicitada!\n");
+        getch();
+    }
+}
+
+void cadastroApostas(typeAposta apostas[TF], int &tl, typeConcurso concursos[TF], int tlc, typeApostador apostadores[TF], int tlp)
+{
+    int auxId, pos;
+    system("cls");
+    printf("--- Cadastro de apostas ---\n");
+    if (tlp != 0)
+    {
+        if (tlc != 0)
+        {
+            printf("\n[INFO] Para sair do cadastro de apostas, digite [0]\n");
+            printf("\nId. da aposta: ");
+            fflush(stdin);
+            scanf("%d", &auxId);
+            while (tl < TF && auxId != 0)
+            {
+                if (achouAposta(apostas, tl, auxId) == -1)
+                {
+                    char auxCPF[12];
+                    printf("\nDigite o CPF do apostador que ira apostar: ");
+                    fflush(stdin);
+                    gets(auxCPF);
+
+                    pos = achouCPF(apostadores, tlp, auxCPF);
+                    if (pos != -1)
+                    {
+                        int auxConc;
+                        printf("\nDigite o Id do concurso: ");
+                        fflush(stdin);
+                        scanf("%d", &auxConc);
+
+                        pos = achouConcurso(concursos, tlc, auxConc);
+                        if (pos != -1)
+                        {
+                            cadastroApostasDados(apostas, tl, auxId, auxCPF, auxConc);
+                        }
+                        else
+                        {
+                            printf("\n[ERRO] O concurso num. [%d] nao foi encontrado!\n", auxConc);
+                            getch();
+                        }
+                    }
+                    else
+                    {
+                        printf("\n[ERRO] O CPF [%s] nao foi encontrado!\n", auxCPF);
+                        getch();
+                    }
+                }
+                else
+                    printf("\n[ERRO] A aposta num. [%d] ja existe e nao pode ser duplicado!\n\n", auxId);
+
+                system("cls");
+                printf("--- Cadastro de apostas ---\n");
+                printf("\n[INFO] Para sair do cadastro de apostas, digite [0]\n");
+                printf("\n-----------------------------------------------------------\n");
+                printf("\nId. da aposta: ");
+                fflush(stdin);
+                scanf("%d", &auxId);
+            }
+        }
+        else
+        {
+            printf("\n[ERRO] Nao ha nenhum concurso cadastrado!");
+            getch();
+        }
+    }
+    else
+    {
+        printf("\n[ERRO] Nao ha nenhum apostador cadastrado!");
+        getch();
+    }
+}
+
+void exibirApostas(typeAposta apostas[TF], int tl)
+{
+    system("cls");
+    printf("--- Exibir Apostas ---\n");
+    if (tl == 0)
+    {
+        printf("\n[ERRO] Nao ha nenhuma aposta cadastrada!");
+    }
+    else
+    {
+        for (int i = 0; i < tl; i++)
+        {
+            printf("\n-----------------------------------------------\n");
+            printf("Id da Aposta: %d\n", apostas[i].idAposta);
+            printf("Id do Concurso: %d\n", apostas[i].idConc);
+            printf("CPF do Apostador: %s\n", apostas[i].CPF);
+            printf("Qtde de num. apostados: %d\n", apostas[i].qtdeNumApostado);
+            printf("Num. apostados: ");
+            for (int j = 0; j < apostas[i].qtdeNumApostado; j++) 
+                printf("[%d] ", apostas[i].numApostado[j]); 
+        }
+    }
+    getch();
 }
 
 void exibirApostadores(typeApostador apostadores[TF], int tl)
@@ -222,9 +430,11 @@ void alterarDadoConcursos(typeConcurso concursos[TF], int pos, int opr, int tl)
         fflush(stdin);
         scanf("%d %d %d", &dia, &mes, &ano);
         if (dia != 0 && mes != 0 && ano != 0)
+        {
             concursos[pos].data.dia = dia;
-        concursos[pos].data.mes = mes;
-        concursos[pos].data.ano = ano;
+            concursos[pos].data.mes = mes;
+            concursos[pos].data.ano = ano;
+        }
         break;
     }
 }
@@ -616,7 +826,8 @@ int main(void)
     srand(time(NULL));
     typeApostador apostadores[TF];
     typeConcurso concursos[TF];
-    int tlp = 0, tlc = 0;
+    typeAposta apostas[TF];
+    int tlp = 0, tlc = 0, tla = 0;
     char opcao, subOpcao;
     do
     {
@@ -685,11 +896,11 @@ int main(void)
                 switch (subOpcao)
                 {
                 case 'A':
-
+                    cadastroApostas(apostas, tla, concursos, tlc, apostadores, tlp);
                     break;
 
                 case 'B':
-
+                    exibirApostas(apostas, tla);
                     break;
 
                 case 'C':
