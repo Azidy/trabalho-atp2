@@ -1,7 +1,7 @@
 // Codigo feito por Diego Felippe da Fonseca Calesco e Heitor Franzo Justo
 
 /* --- Comentarios: ---
--ULTIMA ATUALIZACAO: 23/03/2025 8:57 PM
+-ULTIMA ATUALIZACAO: 23/03/2025 11:11 PM
 */
 
 #include <stdio.h>
@@ -334,8 +334,8 @@ void exibirApostas(typeAposta apostas[TF], int tl)
             printf("CPF do Apostador: %s\n", apostas[i].CPF);
             printf("Qtde de num. apostados: %d\n", apostas[i].qtdeNumApostado);
             printf("Num. apostados: ");
-            for (int j = 0; j < apostas[i].qtdeNumApostado; j++) 
-                printf("[%d] ", apostas[i].numApostado[j]); 
+            for (int j = 0; j < apostas[i].qtdeNumApostado; j++)
+                printf("[%d] ", apostas[i].numApostado[j]);
         }
     }
     getch();
