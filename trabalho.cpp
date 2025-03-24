@@ -1,7 +1,7 @@
 // Codigo feito por Diego Felippe da Fonseca Calesco e Heitor Franzo Justo
 
 /* --- Comentarios: ---
--ULTIMA ATUALIZACAO: 23/03/2025 11:11 PM
+-ULTIMA ATUALIZACAO: 24/03/2025 05:25 AM
 */
 
 #include <stdio.h>
@@ -106,10 +106,9 @@ void cabecalhoAlterar(char mensagem[10], int tipo)
 {
     system("cls");
     printf("--- Alteracao de %s ---\n", mensagem);
-    if(tipo==1)
+    if (tipo == 1)
         printf("%s sendo alterado: \n", mensagem);
 }
-
 
 void cabecalhoCadastroAposta(int exibir, char apostador[12], int concurso)
 {
@@ -387,7 +386,7 @@ void exibirTodosApostadores(typeApostador apostadores[TF], int tl)
     else
         for (int i = 0; i < tl; i++)
             exibirApostador(apostadores, i);
-        
+
     getch();
 }
 
@@ -425,7 +424,7 @@ char menuAlterarConcursos()
 void alterarDadoConcursos(typeConcurso concursos[TF], int pos, int opr, int tl)
 {
     int aux;
-    cabecalhoAlterar("Concurso",1);
+    cabecalhoAlterar("Concurso", 1);
     printf("\n------------------------\n");
     printf("Id do concurso: %d\n", concursos[pos].idConc);
     printf("Data do concurso: %d/%d/%d\n", concursos[pos].data.dia, concursos[pos].data.mes, concursos[pos].data.ano);
@@ -497,7 +496,7 @@ void alterarConcursos(typeConcurso concursos[TF], int tl)
             {
                 do
                 {
-                    cabecalhoAlterar("Concurso",1);
+                    cabecalhoAlterar("Concurso", 1);
                     printf("\n------------------------\n");
                     printf("Id do concurso: %d\n", concursos[pos].idConc);
                     printf("Data do concurso: %d/%d/%d\n", concursos[pos].data.dia, concursos[pos].data.mes, concursos[pos].data.ano);
@@ -662,9 +661,8 @@ void excluirApostadores(typeApostador apostadores[TF], int &tl)
 void alterarDadoApostadores(typeApostador apostadores[TF], int pos, int opr, int tl)
 {
     char aux[30];
-    cabecalhoAlterar("Apostador",1);
+    cabecalhoAlterar("Apostador", 1);
     exibirApostador(apostadores, pos);
-    
 
     switch (opr)
     {
@@ -708,7 +706,7 @@ void alterarApostadores(typeApostador apostadores[TF], int tl)
 {
     char auxCPF[12], opcao;
     int pos;
-    cabecalhoAlterar("Apostadores",0);
+    cabecalhoAlterar("Apostadores", 0);
     if (tl == 0)
     {
         printf("\n[ERRO] Nao ha nenhum apostador cadastrado!");
@@ -734,7 +732,7 @@ void alterarApostadores(typeApostador apostadores[TF], int tl)
             {
                 do
                 {
-                    cabecalhoAlterar("Apostador",1);
+                    cabecalhoAlterar("Apostador", 1);
                     exibirApostador(apostadores, pos);
                     opcao = menuAlterarApostadores();
                     switch (opcao)
@@ -772,7 +770,7 @@ void alterarDadoApostas(typeAposta apostas[TF], int pos, int opr, int tl, typeCo
 {
     char aux[30];
     int auxInt;
-    cabecalhoAlterar("Aposta",1);
+    cabecalhoAlterar("Aposta", 1);
     printf("\n-----------------------------------------------\n");
     printf("Id da Aposta: %d\n", apostas[pos].idAposta);
     printf("Id do Concurso: %d\n", apostas[pos].idConc);
@@ -868,7 +866,7 @@ void alterarApostas(typeAposta apostas[TF], int tl, typeConcurso concursos[TF], 
 {
     char opcao;
     int pos, auxId;
-    cabecalhoAlterar("Aposta",0);
+    cabecalhoAlterar("Aposta", 0);
     if (tl == 0)
     {
         printf("\n[ERRO] Nao ha nenhuma aposta cadastrado!");
@@ -895,7 +893,7 @@ void alterarApostas(typeAposta apostas[TF], int tl, typeConcurso concursos[TF], 
             {
                 do
                 {
-                    cabecalhoAlterar("Aposta",1);
+                    cabecalhoAlterar("Aposta", 1);
                     printf("\n-----------------------------------------------\n");
                     printf("Id da Aposta: %d\n", apostas[pos].idAposta);
                     printf("Id do Concurso: %d\n", apostas[pos].idConc);
