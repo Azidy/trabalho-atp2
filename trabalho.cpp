@@ -113,7 +113,7 @@ void apostarNum(int qtde, typeAposta apostas[TF], int tl, int numAposta[60])
                     {
                         if (numApostado - 1 == i)
                         {
-                            numAposta[i]= numApostado;
+                            numAposta[i] += 1;
                         }
                     }
                     
