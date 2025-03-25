@@ -174,64 +174,95 @@ void realizarConcurso(typeConcurso concursos[TF], int tl)
 
 void DesenhaMoldura(int LI, int CI, int LF, int CF)
 {
-	int a;
-	gotoxy(CI,LI);
-	printf("%c",201);
-	
-	gotoxy(CF,LF);
-	printf("%c",188);
-	
-	gotoxy(CI,LF);
-	printf("%c",200);
-	
-	gotoxy(CF,LI);
-	printf("%c",187);
-	
-	for(a=CI+1;a<CF;a++)
-	{
-		gotoxy(a,LI);
-		printf("%c",205);
-		gotoxy(a,LF);
-		printf("%c",205);
-	}
-	
-	for(a=LI+1;a<LF;a++)
-	{
-		gotoxy(CI,a);
-		printf("%c",186);
-		gotoxy(CF,a);
-		printf("%c",186);
-	}
+    int a;
+    gotoxy(CI, LI);
+    printf("%c", 201);
+
+    gotoxy(CF, LF);
+    printf("%c", 188);
+
+    gotoxy(CI, LF);
+    printf("%c", 200);
+
+    gotoxy(CF, LI);
+    printf("%c", 187);
+
+    for (a = CI + 1; a < CF; a++)
+    {
+        gotoxy(a, LI);
+        printf("%c", 205);
+        gotoxy(a, LF);
+        printf("%c", 205);
+    }
+
+    for (a = LI + 1; a < LF; a++)
+    {
+        gotoxy(CI, a);
+        printf("%c", 186);
+        gotoxy(CF, a);
+        printf("%c", 186);
+    }
 }
 
 void molduraSistema()
 {
+    textcolor(11);
     system("cls");
     DesenhaMoldura(1, 10, 3, 110);
     DesenhaMoldura(1, 10, 30, 110);
     DesenhaMoldura(3, 42, 30, 42);
     DesenhaMoldura(12, 10, 30, 42);
-    gotoxy(10,3); printf("%c",204);
-    gotoxy(10,12); printf("%c",204);
-    gotoxy(110,3); printf("%c",185);
+    gotoxy(10, 3);
+    printf("%c", 204);
+    gotoxy(10, 12);
+    printf("%c", 204);
+    gotoxy(110, 3);
+    printf("%c", 185);
 
-    gotoxy(42,3); printf("%c",203);
-    gotoxy(42,12); printf("%c",185);
-    gotoxy(42,30); printf("%c",202);
+    gotoxy(42, 3);
+    printf("%c", 203);
+    gotoxy(42, 12);
+    printf("%c", 185);
+    gotoxy(42, 30);
+    printf("%c", 202);
+    textcolor(7);
+}
+
+void limparPainel()
+{
+    for (int y = 4; y <= 29; y++)
+    {
+        for (int x = 43; x <= 109; x++)
+        {
+            gotoxy(x, y);
+            printf(" ");
+        }
+    }
 }
 
 char menuInicial(void)
-{   
-    
+{
+
     molduraSistema();
-                        //-------------------------------------------------+-------------------------------------------------
-    gotoxy(11,2); printf("                                           MENU PRINCIPAL                                          ");              
-    gotoxy(12,4); printf("[A] Concursos\n");                        
-    gotoxy(12,5); printf("[B] Apostadores\n");
-    gotoxy(12,6); printf("[C] Apostas\n");
-    gotoxy(12,7); printf("[D] Excluir\n");
-    gotoxy(12,10); printf("[Esc] Sair\n");
-    gotoxy(12,11); printf("Opcao desejada: ");
+    //-------------------------------------------------+-------------------------------------------------
+    textcolor(13);
+    gotoxy(11, 2);
+    printf("                                           MENU PRINCIPAL                                          ");
+    textcolor(10);
+    gotoxy(12, 4);
+    printf("[A] Concursos\n");
+    gotoxy(12, 5);
+    printf("[B] Apostadores\n");
+    gotoxy(12, 6);
+    printf("[C] Apostas\n");
+    gotoxy(12, 7);
+    printf("[D] Excluir\n");
+    textcolor(8);
+    gotoxy(12, 10);
+    printf("[Esc] Sair\n");
+    gotoxy(12, 11);
+    textcolor(7);
+    printf("Opcao desejada: ");
     fflush(stdin);
     return toupper(getche());
 }
@@ -239,13 +270,24 @@ char menuInicial(void)
 char menuSubApostadores()
 {
     molduraSistema();
-    gotoxy(11,2); printf("                                        MENU DE APOSTADORES                                        ");      
-    gotoxy(12,4); printf("[A] Cadastrar\n");
-    gotoxy(12,5); printf("[B] Consultar\n");
-    gotoxy(12,6); printf("[C] Alterar\n");
-    gotoxy(12,7); printf("[D] Excluir\n");
-    gotoxy(12,10); printf("[Esc] Sair\n");
-    gotoxy(12,11); printf("Opcao desejada: ");
+    textcolor(13);
+    gotoxy(11, 2);
+    printf("                                        MENU DE APOSTADORES                                        ");
+    textcolor(10);
+    gotoxy(12, 4);
+    printf("[A] Cadastrar\n");
+    gotoxy(12, 5);
+    printf("[B] Consultar\n");
+    gotoxy(12, 6);
+    printf("[C] Alterar\n");
+    gotoxy(12, 7);
+    printf("[D] Excluir\n");
+    gotoxy(12, 10);
+    textcolor(8);
+    printf("[Esc] Sair\n");
+    textcolor(7);
+    gotoxy(12, 11);
+    printf("Opcao desejada: ");
     fflush(stdin);
     return toupper(getche());
 }
@@ -253,27 +295,47 @@ char menuSubApostadores()
 char menuSubConsurso()
 {
     molduraSistema();
-    gotoxy(11,2); printf("                                         MENU DE CONCURSOS                                         ");     
-    gotoxy(12,4); printf("[A] Cadastrar\n");
-    gotoxy(12,5); printf("[B] Consultar\n");
-    gotoxy(12,6); printf("[C] Alterar\n");
-    gotoxy(12,7); printf("[D] Excluir\n");
-    gotoxy(12,8); printf("[E] Realizar Sorteio\n");
-    gotoxy(12,10); printf("[Esc] Sair\n");
-    gotoxy(12,11); printf("Opcao desejada: ");
+    textcolor(13);
+    gotoxy(11, 2);
+    printf("                                         MENU DE CONCURSOS                                         ");
+    textcolor(10);
+    gotoxy(12, 4);
+    printf("[A] Cadastrar\n");
+    gotoxy(12, 5);
+    printf("[B] Consultar\n");
+    gotoxy(12, 6);
+    printf("[C] Alterar\n");
+    gotoxy(12, 7);
+    printf("[D] Excluir\n");
+    gotoxy(12, 8);
+    printf("[E] Realizar Sorteio\n");
+    gotoxy(12, 10);
+    textcolor(8);
+    printf("[Esc] Sair\n");
+    textcolor(7);
+    gotoxy(12, 11);
+    printf("Opcao desejada: ");
     fflush(stdin);
     return toupper(getche());
 }
 
 char menuSubAposta()
 {
-    molduraSistema();   
-    gotoxy(11,2); printf("                                          MENU DE APOSTAS                                          ");     
-    gotoxy(12,4); printf("[A] Cadastrar\n");                              
-    gotoxy(12,5); printf("[B] Consultar\n");
-
-    gotoxy(12,10); printf("[Esc] Sair\n");
-    gotoxy(12,11); printf("Opcao desejada: ");
+    molduraSistema();
+    textcolor(13);
+    gotoxy(11, 2);
+    printf("                                          MENU DE APOSTAS                                          ");
+    textcolor(10);
+    gotoxy(12, 4);
+    printf("[A] Cadastrar\n");
+    gotoxy(12, 5);
+    printf("[B] Consultar\n");
+    textcolor(8);
+    gotoxy(12, 10);
+    textcolor(7);
+    printf("[Esc] Sair\n");
+    gotoxy(12, 11);
+    printf("Opcao desejada: ");
     fflush(stdin);
     return toupper(getche());
 }
@@ -299,18 +361,22 @@ char menuAlterarApostadores()
 
 void cabecalhoCadastro(char mensagem[10], int tipo)
 {
-
-    system("cls");
-    printf("--- Cadastro de %s ---\n", mensagem);
+    textcolor(13);
+    gotoxy(44, 4);
+    printf("-------------------- Cadastro de %s --------------------", mensagem);
+    textcolor(14);
     switch (tipo)
     {
     case 1:
-        printf("\n[INFO] Para sair do cadastro de %s, apenas aperte [ENTER]\n", mensagem);
+        gotoxy(44, 6);
+        printf("[INFO] Para sair do cadastro de %s, aperte [ENTER]", mensagem);
         break;
     case 2:
-        printf("\n[INFO] Para sair do cadastro de %s, digite [0]\n", mensagem);
+        gotoxy(44, 6);
+        printf("[INFO] Para sair do cadastro de %s, digite [0]", mensagem);
         break;
     }
+    textcolor(7);
 }
 
 void cabecalhoAlterar(char mensagem[10], int tipo)
@@ -385,15 +451,17 @@ void cadastroApostadores(typeApostador apostadores[TF], int &tl)
 void cadastroConcursos(typeConcurso concursos[TF], int &tl)
 {
     int auxId, dia, mes, ano;
-    cabecalhoCadastro("apostadores", 2);
-    printf("\nId. do concurso: ");
+    cabecalhoCadastro("CONCURSO", 2);
+    gotoxy(44, 8);
+    printf("Id. do concurso: ");
     fflush(stdin);
     scanf("%d", &auxId);
     while (tl < TF && auxId != 0)
     {
         if (achouConcurso(concursos, tl, auxId) == -1)
         {
-            printf("\nData do concurso: [dd] [mm] [aaaa]: ");
+            gotoxy(44, 10);
+            printf("Data do concurso: [dd] [mm] [aaaa]: ");
             fflush(stdin);
             scanf("%d %d %d", &dia, &mes, &ano);
             if (dia != 0 && mes != 0 && ano != 0)
@@ -407,23 +475,30 @@ void cadastroConcursos(typeConcurso concursos[TF], int &tl)
 
                 tl++;
             }
-
             else
             {
-                printf("\n[ERRO] Um ou mais campos estao vazios!");
+                textcolor(12);
+                gotoxy(44, 12);
+                printf("[ERRO] Os campos da data nao podem ser 0!\n\n", auxId);
+                textcolor(7);
+                gotoxy(44, 14);
                 getch();
             }
         }
 
         else
         {
-            printf("\n[ERRO] O concurso num. [%d] ja existe e nao pode ser duplicado!\n\n", auxId);
+            textcolor(12);
+            gotoxy(44, 10);
+            printf("[ERRO] O concurso num. [%d] ja existe e nao pode ser duplicado!\n\n", auxId);
+            textcolor(7);
             getch();
         }
 
-        cabecalhoCadastro("apostadores", 2);
-        printf("\n------------------------------------------------\n");
-        printf("\nId. do concurso: ");
+        limparPainel();
+        cabecalhoCadastro("CONCURSO", 2);
+        gotoxy(44, 8);
+        printf("Id. do concurso: ");
         fflush(stdin);
         scanf("%d", &auxId);
     }
@@ -462,25 +537,25 @@ void cadastroApostas(typeAposta apostas[TF], int &tl, typeConcurso concursos[TF]
                         if (pos != -1)
                         {
                             int qtde;
-						    cabecalhoCadastroAposta(1, auxCPF, auxConc);
-						    printf("\n[INFO] Para sair do cadastro de apostas, digite [0]\n");
-						    printf("\nQuantos numeros deseja apostar? [Aposte entre 5 a 10 numeros]: ");
-						    scanf("%d", &qtde);
-						    if (qtde > 4 && qtde < 11)
-						    {
-						        apostas[tl].qtdeNumApostado = qtde;
-						        cabecalhoCadastroAposta(1, auxCPF, auxConc);
-						        apostarNum(qtde, apostas, tl);
-						        apostas[tl].idConc = auxConc;
-						        apostas[tl].idAposta = auxId;
-						        strcpy(apostas[tl].CPF, auxCPF);
-						        tl++;
-						    }
-						    else
-						    {
-						        printf("\n[ERRO] Digite a qtde. solicitada!\n");
-						        getch();
-						    }
+                            cabecalhoCadastroAposta(1, auxCPF, auxConc);
+                            printf("\n[INFO] Para sair do cadastro de apostas, digite [0]\n");
+                            printf("\nQuantos numeros deseja apostar? [Aposte entre 5 a 10 numeros]: ");
+                            scanf("%d", &qtde);
+                            if (qtde > 4 && qtde < 11)
+                            {
+                                apostas[tl].qtdeNumApostado = qtde;
+                                cabecalhoCadastroAposta(1, auxCPF, auxConc);
+                                apostarNum(qtde, apostas, tl);
+                                apostas[tl].idConc = auxConc;
+                                apostas[tl].idAposta = auxId;
+                                strcpy(apostas[tl].CPF, auxCPF);
+                                tl++;
+                            }
+                            else
+                            {
+                                printf("\n[ERRO] Digite a qtde. solicitada!\n");
+                                getch();
+                            }
                         }
                         else
                         {
@@ -599,27 +674,26 @@ void alterarDadoConcursos(typeConcurso concursos[TF], int pos, int opr, int tl)
     {
     case 1:
         int dia, mes, ano;
-        if(concursos[pos].status==0)
+        if (concursos[pos].status == 0)
         {
-        	printf("\n[INFO] Para cancelar alteracao, digite [0 0 0]\n");
-	        printf("\nData atualizada: ");
-	        fflush(stdin);
-	        scanf("%d %d %d", &dia, &mes, &ano);
-	        if (dia != 0 && mes != 0 && ano != 0)
-	        {
-	            concursos[pos].data.dia = dia;
-	            concursos[pos].data.mes = mes;
-	            concursos[pos].data.ano = ano;
-	        }
+            printf("\n[INFO] Para cancelar alteracao, digite [0 0 0]\n");
+            printf("\nData atualizada: ");
+            fflush(stdin);
+            scanf("%d %d %d", &dia, &mes, &ano);
+            if (dia != 0 && mes != 0 && ano != 0)
+            {
+                concursos[pos].data.dia = dia;
+                concursos[pos].data.mes = mes;
+                concursos[pos].data.ano = ano;
+            }
         }
         else
         {
-        	printf("\n[ERRO] O concurso ja foi apurado!\n");
-        	getch();
+            printf("\n[ERRO] O concurso ja foi apurado!\n");
+            getch();
         }
-        
+
         break;
-      
     }
 }
 
@@ -677,7 +751,7 @@ void alterarDadoApostadores(typeApostador apostadores[TF], int pos, int opr, int
     switch (opr)
     {
     case 1:
-         printf("\n[INFO] Para cancelar alteracao, apenas aperte [ENTER]\n");
+        printf("\n[INFO] Para cancelar alteracao, apenas aperte [ENTER]\n");
         printf("\nNome atualizado: ");
         fflush(stdin);
         gets(aux);
@@ -686,7 +760,7 @@ void alterarDadoApostadores(typeApostador apostadores[TF], int pos, int opr, int
         break;
         break;
     case 2:
-       printf("\n[INFO] Para cancelar alteracao, apenas aperte [ENTER]\n");
+        printf("\n[INFO] Para cancelar alteracao, apenas aperte [ENTER]\n");
         printf("\nTelefone atualizado: ");
         fflush(stdin);
         gets(aux);
