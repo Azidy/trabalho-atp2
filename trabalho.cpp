@@ -479,7 +479,7 @@ void cadastroConcursos(typeConcurso concursos[TF], int &tl)
             {
                 textcolor(12);
                 gotoxy(44, 12);
-                printf("[ERRO] Os campos da data nao podem ser 0!\n\n", auxId);
+                printf("[ERRO] Os campos da data nao podem ser 0!", auxId);
                 textcolor(7);
                 gotoxy(44, 14);
                 getch();
@@ -491,6 +491,7 @@ void cadastroConcursos(typeConcurso concursos[TF], int &tl)
             textcolor(12);
             gotoxy(44, 10);
             printf("[ERRO] O concurso num. [%d] ja existe e nao pode ser duplicado!\n\n", auxId);
+            gotoxy(44, 12);
             textcolor(7);
             getch();
         }
