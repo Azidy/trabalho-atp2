@@ -1,7 +1,7 @@
 // Codigo feito por Diego Felippe da Fonseca Calesco e Heitor Franzo Justo
 
 /* --- Comentarios: ---
--ULTIMA ATUALIZACAO: 25/03/2025 04:30 AM
+-ULTIMA ATUALIZACAO: 25/03/2025 04:00 PM
 -Resultado: Informar num do concurso, verificar concurso e status, pegar infos de apostas com o mesmo numero de concurso, comparar numeros apostados com os sorteados, informar vencedor
 */
 
@@ -240,6 +240,18 @@ void limparPainel()
     }
 }
 
+void msgErro(char mensagem[60], int xMsg, int confirmar)
+{
+    textcolor(12);
+    gotoxy(44, xMsg);
+    printf("[ERRO] %s", mensagem);
+    gotoxy(44, xMsg+2);
+    textcolor(7);
+
+    if(confirmar==1)
+        getch();
+}
+
 char menuInicial(void)
 {
 
@@ -330,11 +342,11 @@ char menuSubAposta()
     printf("[A] Cadastrar\n");
     gotoxy(12, 5);
     printf("[B] Consultar\n");
-    textcolor(8);
     gotoxy(12, 10);
-    textcolor(7);
+    textcolor(8);
     printf("[Esc] Sair\n");
     gotoxy(12, 11);
+    textcolor(7);
     printf("Opcao desejada: ");
     fflush(stdin);
     return toupper(getche());
@@ -389,38 +401,51 @@ void cabecalhoAlterar(char mensagem[10], int tipo)
 
 void cabecalhoCadastroAposta(int exibir, char apostador[12], int concurso)
 {
-    system("cls");
-    printf("--- Cadastro de apostas ---\n");
+    textcolor(13);
+    gotoxy(44, 4);
+    printf("-------------------- Cadastro de apostas --------------------\n");
+    gotoxy(44, 6);
+    textcolor(14);
+    printf("[INFO] Para sair do cadastro de apostas, digite [0]");
 
     if (exibir == 1)
     {
-        printf("\n---------------------------\n");
-        printf("CPF do apostador: %s\n", apostador);
-        printf("Id do concurso: %d\n", concurso);
-        printf("---------------------------\n");
+        gotoxy(12, 13);
+        printf("---------------------------");
+        gotoxy(12, 14);
+        printf("CPF do apostador: %s", apostador);
+        gotoxy(12, 15);
+        printf("Id do concurso: %d", concurso);
+        gotoxy(12, 16);
+        printf("-----------------------------");
     }
+
+    textcolor(7);
 }
 
 void cadastroApostadores(typeApostador apostadores[TF], int &tl)
 {
     char auxCPF[12], auxNome[30], auxTel[12];
     cabecalhoCadastro("apostadores", 1);
-    printf("\nCPF: ");
+    gotoxy(44, 8);
+    printf("CPF: ");
     fflush(stdin);
     gets(auxCPF);
-    while (tl < TF && strcmp(auxCPF, "\0") != 0)
+    while (tl < TF && strcmp(auxCPF, "\0") != 0 && strcmp(auxCPF, "0") != 0)
     {
         if (achouCPF(apostadores, tl, auxCPF) == -1)
         {
+            gotoxy(44, 10);
             printf("Nome: ");
             fflush(stdin);
             gets(auxNome);
 
+            gotoxy(44, 12);
             printf("Telefone: ");
             fflush(stdin);
             gets(auxTel);
 
-            if (strcmp(auxNome, "\0") != 0 && strcmp(auxTel, "\0") != 0)
+            if (strcmp(auxNome, "\0") != 0 && strcmp(auxTel, "\0") != 0 && strcmp(auxNome, "0") != 0 && strcmp(auxTel, "0") != 0)
             {
                 strcpy(apostadores[tl].CPF, auxCPF);
                 strcpy(apostadores[tl].nome, auxNome);
@@ -428,21 +453,16 @@ void cadastroApostadores(typeApostador apostadores[TF], int &tl)
                 tl++;
             }
             else
-            {
-                printf("\n[ERRO] Um ou mais campos estao vazios!");
-                getch();
-            }
+                msgErro("Os campos nao podem ser vazios ou nulos!",14,1);
         }
 
         else
-        {
-            printf("\n[ERRO] O CPF [%s] ja existe e nao pode ser duplicado!\n\n", auxCPF);
-            getch();
-        }
+            msgErro("Ja existe um apostador cadastrado com esse CPF!",10,1);
 
+        limparPainel();
         cabecalhoCadastro("apostadores", 1);
-        printf("\n------------------------------------------------\n");
-        printf("\nCPF: ");
+        gotoxy(44, 8);
+        printf("CPF: ");
         fflush(stdin);
         gets(auxCPF);
     }
@@ -476,28 +496,15 @@ void cadastroConcursos(typeConcurso concursos[TF], int &tl)
                 tl++;
             }
             else
-            {
-                textcolor(12);
-                gotoxy(44, 12);
-                printf("[ERRO] Os campos da data nao podem ser 0!", auxId);
-                textcolor(7);
-                gotoxy(44, 14);
-                getch();
-            }
+                msgErro("Os campos da data nao podem ser 0!",12,1);
+    
         }
 
         else
-        {
-            textcolor(12);
-            gotoxy(44, 10);
-            printf("[ERRO] O concurso num. [%d] ja existe e nao pode ser duplicado!\n\n", auxId);
-            gotoxy(44, 12);
-            textcolor(7);
-            getch();
-        }
+            msgErro("Ja existe um concurso cadastrado com esse ID!",10,1);
 
         limparPainel();
-        cabecalhoCadastro("CONCURSO", 2);
+        cabecalhoCadastro("Concurso", 2);
         gotoxy(44, 8);
         printf("Id. do concurso: ");
         fflush(stdin);
@@ -513,8 +520,8 @@ void cadastroApostas(typeAposta apostas[TF], int &tl, typeConcurso concursos[TF]
     {
         if (tlc != 0)
         {
-            printf("\n[INFO] Para sair do cadastro de apostas, digite [0]\n");
-            printf("\nId. da aposta: ");
+            gotoxy(44, 8);
+            printf("Id. da aposta: ");
             fflush(stdin);
             scanf("%d", &auxId);
             while (tl < TF && auxId != 0)
@@ -522,7 +529,8 @@ void cadastroApostas(typeAposta apostas[TF], int &tl, typeConcurso concursos[TF]
                 if (achouAposta(apostas, tl, auxId) == -1)
                 {
                     char auxCPF[12];
-                    printf("\nDigite o CPF do apostador que ira apostar: ");
+                    gotoxy(44, 10);
+                    printf("Digite o CPF do apostador que ira apostar: ");
                     fflush(stdin);
                     gets(auxCPF);
 
@@ -530,7 +538,8 @@ void cadastroApostas(typeAposta apostas[TF], int &tl, typeConcurso concursos[TF]
                     if (pos != -1)
                     {
                         int auxConc;
-                        printf("\nDigite o Id do concurso: ");
+                        gotoxy(44, 12);
+                        printf("Digite o Id do concurso: ");
                         fflush(stdin);
                         scanf("%d", &auxConc);
 
@@ -538,9 +547,10 @@ void cadastroApostas(typeAposta apostas[TF], int &tl, typeConcurso concursos[TF]
                         if (pos != -1)
                         {
                             int qtde;
+                            limparPainel();
                             cabecalhoCadastroAposta(1, auxCPF, auxConc);
-                            printf("\n[INFO] Para sair do cadastro de apostas, digite [0]\n");
-                            printf("\nQuantos numeros deseja apostar? [Aposte entre 5 a 10 numeros]: ");
+                            gotoxy(44, 8);
+                            printf("Quantos numeros deseja apostar? [Aposte entre 5 a 10 numeros]: ");
                             scanf("%d", &qtde);
                             if (qtde > 4 && qtde < 11)
                             {
@@ -554,45 +564,69 @@ void cadastroApostas(typeAposta apostas[TF], int &tl, typeConcurso concursos[TF]
                             }
                             else
                             {
-                                printf("\n[ERRO] Digite a qtde. solicitada!\n");
+                                gotoxy(44, 14);
+                                textcolor(12);
+                                printf("[ERRO] Digite a qtde. solicitada!");
+                                gotoxy(44, 16);
+                                textcolor(7);
                                 getch();
                             }
                         }
                         else
                         {
-                            printf("\n[ERRO] O concurso num. [%d] nao foi encontrado!\n", auxConc);
+                            gotoxy(44, 14);
+                            textcolor(12);
+                            printf("[ERRO] O concurso num. [%d] nao foi encontrado!", auxConc);
+                            gotoxy(44, 16);
+                            textcolor(7);
                             getch();
                         }
                     }
                     else
                     {
-                        printf("\n[ERRO] O CPF [%s] nao foi encontrado!\n", auxCPF);
+                        gotoxy(44, 12);
+                        textcolor(12);
+                        printf("[ERRO] O CPF [%s] nao foi encontrado!", auxCPF);
+                        gotoxy(44, 14);
+                        textcolor(7);
                         getch();
                     }
                 }
                 else
                 {
-                    printf("\n[ERRO] A aposta num. [%d] ja existe e nao pode ser duplicado!\n\n", auxId);
+                    gotoxy(44, 10);
+                    textcolor(12);
+                    printf("[ERRO] A aposta num. [%d] ja existe e nao pode ser duplicado!", auxId);
+                    gotoxy(44, 12);
+                    textcolor(7);
                     getch();
                 }
 
+                limparPainel();
                 cabecalhoCadastroAposta(0, "", 0);
-                printf("\n[INFO] Para sair do cadastro de apostas, digite [0]\n");
-                printf("\n-----------------------------------------------------------\n");
-                printf("\nId. da aposta: ");
+                gotoxy(44, 8);
+                printf("Id. da aposta: ");
                 fflush(stdin);
                 scanf("%d", &auxId);
             }
         }
         else
         {
-            printf("\n[ERRO] Nao ha nenhum concurso cadastrado!");
+            gotoxy(44, 8);
+            textcolor(12);
+            printf("[ERRO] Nao ha nenhum concurso cadastrado!");
+            gotoxy(44, 10);
+            textcolor(7);
             getch();
         }
     }
     else
     {
-        printf("\n[ERRO] Nao ha nenhum apostador cadastrado!");
+        gotoxy(44, 8);
+        textcolor(12);
+        printf("[ERRO] Nao ha nenhum apostador cadastrado!");
+        gotoxy(44, 10);
+        textcolor(7);
         getch();
     }
 }
@@ -603,18 +637,31 @@ void exibirConcurso(typeConcurso concursos[TF], int pos)
     printf("Id do concurso: %d\n", concursos[pos].idConc);
     printf("Data do concurso: %d/%d/%d\n", concursos[pos].data.dia, concursos[pos].data.mes, concursos[pos].data.ano);
     printf("Numeros sorteados: [%d] [%d] [%d] [%d] [%d]\n", concursos[pos].numeroSorteado[0], concursos[pos].numeroSorteado[1], concursos[pos].numeroSorteado[2], concursos[pos].numeroSorteado[3], concursos[pos].numeroSorteado[4]);
+    
 }
 
 void exibirTodosConcursos(typeConcurso concursos[TF], int tl)
 {
-    system("cls");
-    printf("--- Exibir Concursos ---\n");
+    gotoxy(44, 4);
+    textcolor(13);
+    printf("------------------------ Exibir Concursos ------------------------\n");
     if (tl == 0)
-        printf("\n[ERRO] Nao ha nenhum concurso cadastrado!");
+        msgErro("Nao ha nenhum concurso cadastrado!", 6, 0);
     else
+    {
+        int j=0, cor=14;
         for (int i = 0; i < tl; i++)
-            exibirConcurso(concursos, i);
-
+        {
+            textcolor(cor);
+            gotoxy(44, 5+j); printf("------------------------------------------------------------------");
+            gotoxy(44, 6+j); printf("Id do concurso: %d", concursos[i].idConc);
+            gotoxy(44, 7+j); printf("Data do concurso: %d/%d/%d", concursos[i].data.dia, concursos[i].data.mes, concursos[i].data.ano);
+            gotoxy(44, 8+j); printf("Numeros sorteados: [%d] [%d] [%d] [%d] [%d]", concursos[i].numeroSorteado[0], concursos[i].numeroSorteado[1], concursos[i].numeroSorteado[2], concursos[i].numeroSorteado[3], concursos[i].numeroSorteado[4]);
+            gotoxy(44, 9+j); printf("Status do concurso: %d",concursos[i].status);
+            j+=5;
+            cor -= 1;
+        }
+    }
     getch();
 }
 
@@ -628,14 +675,26 @@ void exibirApostador(typeApostador apostadores[TF], int pos)
 
 void exibirTodosApostadores(typeApostador apostadores[TF], int tl)
 {
-    system("cls");
-    printf("--- Exibir Apostadores ---\n");
+    gotoxy(44, 4);
+    textcolor(13);
+    printf("---------------------- Exibir Apostadores ----------------------\n");
     if (tl == 0)
-        printf("\n[ERRO] Nao ha nenhum apostador cadastrado!");
+        msgErro("Nao ha nenhum apostador cadastrado!", 6, 0);
     else
-        for (int i = 0; i < tl; i++)
-            exibirApostador(apostadores, i);
 
+    {
+        int j=0, cor=14;
+        for (int i = 0; i < tl; i++)
+        {
+            printf("\n-----------------------------------------------\n");
+            printf("CPF: %s\n", apostadores[i].CPF);
+            printf("Nome: %s\n", apostadores[i].nome);
+            printf("Fone: %s\n", apostadores[i].telefone);
+            j+=4;
+            cor -= 1;
+        }
+    }
+        
     getch();
 }
 
@@ -1009,7 +1068,11 @@ void excluirApostas(typeAposta apostas[TF], int &tl)
 
 int main(void)
 {
-
+    textcolor(14);
+    printf("[INFO] Antes de usar o programa, aumente o tamanho da janela.\n\n\n");
+    printf("[OK]");
+    textcolor(7);
+    getch();
     srand(time(NULL));
     typeApostador apostadores[TF];
     typeConcurso concursos[TF];
