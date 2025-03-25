@@ -87,7 +87,7 @@ int achouNumApostado(int numApostadoAnalise[10], int tl, int numApostado)
         return -1;
 }
 
-void apostarNum(int qtde, typeAposta apostas[TF], int tl)
+void apostarNum(int qtde, typeAposta apostas[TF], int tl, int numAposta[60])
 {
     int numApostado, i, cod;
     for (i = 0; i < qtde; i++)
@@ -109,6 +109,14 @@ void apostarNum(int qtde, typeAposta apostas[TF], int tl)
                 {
                     apostas[tl].numApostado[i] = numApostado;
                     cod = 1;
+                    for (int i = 0; i < 60; i++)
+                    {
+                        if (numApostado - 1 == i)
+                        {
+                            numAposta[i]= numApostado;
+                        }
+                    }
+                    
                 }
                 else
                 {
@@ -125,7 +133,7 @@ void apostarNum(int qtde, typeAposta apostas[TF], int tl)
     }
 }
 
-void realizarConcurso(typeConcurso concursos[TF], int tl)
+void realizarConcurso(typeConcurso concursos[TF], int tl, int numSorteado[60])
 {
     int auxId, pos;
     system("cls");
@@ -158,6 +166,16 @@ void realizarConcurso(typeConcurso concursos[TF], int tl)
                     concursos[pos].status = 1;
                     for (int i = 0; i < 5; i++)
                         concursos[pos].numeroSorteado[i] = (rand() % 60) + 1;
+
+                        for (int x = 0; x < 5; x++)
+                        {
+                            for (int j = 0; j < 60; j++)
+                            {
+                                if((concursos[pos].numeroSorteado[x]) - 1 == j)
+                                numSorteado[j] += 1;
+                            }
+                            
+                        }
 
                     printf("\n[INFO] Os numeros do concurso num. [%d] foram sorteados, verifique em 'Consultar'!\n", auxId);
                     getch();
@@ -512,7 +530,7 @@ void cadastroConcursos(typeConcurso concursos[TF], int &tl)
     }
 }
 
-void cadastroApostas(typeAposta apostas[TF], int &tl, typeConcurso concursos[TF], int tlc, typeApostador apostadores[TF], int tlp)
+void cadastroApostas(typeAposta apostas[TF], int &tl, typeConcurso concursos[TF], int tlc, typeApostador apostadores[TF], int tlp, int numAposta[60])
 {
     int auxId, pos;
     cabecalhoCadastroAposta(0, "", 0);
@@ -556,7 +574,7 @@ void cadastroApostas(typeAposta apostas[TF], int &tl, typeConcurso concursos[TF]
                             {
                                 apostas[tl].qtdeNumApostado = qtde;
                                 cabecalhoCadastroAposta(1, auxCPF, auxConc);
-                                apostarNum(qtde, apostas, tl);
+                                apostarNum(qtde, apostas, tl, numAposta);
                                 apostas[tl].idConc = auxConc;
                                 apostas[tl].idAposta = auxId;
                                 strcpy(apostas[tl].CPF, auxCPF);
@@ -1078,6 +1096,7 @@ int main(void)
     typeConcurso concursos[TF];
     typeAposta apostas[TF];
     int tlp = 0, tlc = 0, tla = 0;
+    int numAposta[60], numSorteio[60];
     char opcao, subOpcao;
     do
     {
@@ -1108,7 +1127,7 @@ int main(void)
                     break;
 
                 case 'E':
-                    realizarConcurso(concursos, tlc);
+                    realizarConcurso(concursos, tlc, numSorteio);
                     break;
                 }
             } while (subOpcao != 27);
@@ -1146,7 +1165,7 @@ int main(void)
                 switch (subOpcao)
                 {
                 case 'A':
-                    cadastroApostas(apostas, tla, concursos, tlc, apostadores, tlp);
+                    cadastroApostas(apostas, tla, concursos, tlc, apostadores, tlp, numAposta);
                     break;
 
                 case 'B':
