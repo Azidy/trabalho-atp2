@@ -1209,7 +1209,7 @@ int main(void)
     typeConcurso concursos[TF];
     typeAposta apostas[TF];
     int tlp = 0, tlc = 0, tla = 0;
-    int numAposta[60], numSorteio[60], dadosAposta, dadosSorteio;
+    int numAposta[60], numSorteio[60], dadoAposta = 0, dadoSorteio = 0;
     char opcao, subOpcao;
     do
     {
@@ -1240,7 +1240,7 @@ int main(void)
                     break;
 
                 case 'E':
-                    realizarConcurso(concursos, tlc, numSorteio, dadosSorteio);
+                    realizarConcurso(concursos, tlc, numSorteio, dadoSorteio);
                     break;
                 }
             } while (subOpcao != 27);
@@ -1278,7 +1278,7 @@ int main(void)
                 switch (subOpcao)
                 {
                 case 'A':
-                    cadastroApostas(apostas, tla, concursos, tlc, apostadores, tlp, numAposta, dadosAposta);
+                    cadastroApostas(apostas, tla, concursos, tlc, apostadores, tlp, numAposta, dadoAposta);
                     break;
 
                 case 'B':
@@ -1303,7 +1303,7 @@ int main(void)
                     break;
 
                 case 'C':
-                    relatorioNumSorteio(numSorteio, dadosSorteio);
+                    relatorioNumSorteio(numSorteio, dadoSorteio);
                     break;
 
                 case 'D':
