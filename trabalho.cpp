@@ -2,7 +2,6 @@
 
 /* --- Comentarios: ---
 -ULTIMA ATUALIZACAO: 25/03/2025 04:49 AM
--Resultado: Informar num do concurso, verificar concurso e status, pegar infos de apostas com o mesmo numero de concurso, comparar numeros apostados com os sorteados, informar vencedor
 */
 
 #include <stdio.h>
@@ -123,7 +122,7 @@ void limparPainel(int xInicio, int yInicio, int xFinal, int yFinal)
     }
 }
 
-void apostarNum(int qtde, typeAposta apostas[TF], int tl, int numAposta[60])
+void apostarNum(int qtde, typeAposta apostas[TF], int tl, int numAposta[60], int &dado)
 {
     int numApostado, i, cod;
     for (i = 0; i < qtde; i++)
@@ -157,6 +156,7 @@ void apostarNum(int qtde, typeAposta apostas[TF], int tl, int numAposta[60])
                         if (numApostado - 1 == i)
                         {
                             numAposta[i] += 1;
+                            dado = 1;
                         }
                     }
                 }
@@ -169,7 +169,7 @@ void apostarNum(int qtde, typeAposta apostas[TF], int tl, int numAposta[60])
     }
 }
 
-void realizarConcurso(typeConcurso concursos[TF], int tl, int numSorteado[60])
+void realizarConcurso(typeConcurso concursos[TF], int tl, int numSorteado[60], int &dado)
 {
     int auxId, pos;
     gotoxy(44, 4);
@@ -207,8 +207,12 @@ void realizarConcurso(typeConcurso concursos[TF], int tl, int numSorteado[60])
                     {
                         for (int j = 0; j < 60; j++)
                         {
-                            if ((concursos[pos].numeroSorteado[x]) - 1 == j)
+                            if ((concursos[pos].numeroSorteado[x]) - 1 == j){
                                 numSorteado[j] += 1;
+                                dado = 1;
+                            }
+                                
+
                         }
                     }
 
@@ -290,7 +294,7 @@ void proximaPag(int &j, int cor)
     limparPainel(43, 4, 109, 29);
 }
 
-char menuInicial(void)
+char menuInicial()
 {
 
     molduraSistema(1);
@@ -305,6 +309,8 @@ char menuInicial(void)
     printf("[B] Menu de Apostadores");
     gotoxy(12, 6);
     printf("[C] Menu de Apostas");
+    gotoxy(12, 7);
+    printf("[D] Relatorios");
     textcolor(8);
     gotoxy(12, 10);
     printf("[Esc] Sair");
@@ -378,6 +384,31 @@ char menuSubAposta()
     printf("[A] Cadastrar");
     gotoxy(12, 5);
     printf("[B] Consultar");
+    gotoxy(12, 10);
+    textcolor(8);
+    printf("[Esc] Sair");
+    gotoxy(12, 11);
+    textcolor(7);
+    printf("Opcao desejada: ");
+    fflush(stdin);
+    return toupper(getche());
+}
+
+char menuSubRelatorios()
+{
+    molduraSistema(1);
+    textcolor(13);
+    gotoxy(11, 2);
+    printf("                                          MENU DE RELATORIOS                                       ");
+    textcolor(10);
+    gotoxy(12, 4);
+    printf("[A] Ganhadores por concurso");
+    gotoxy(12, 5);
+    printf("[B] Acertadores especifico");
+    gotoxy(12, 6);
+    printf("[C] Mais e menos sorteio");
+    gotoxy(12, 7);
+    printf("[D] Mais e menos apostas");
     gotoxy(12, 10);
     textcolor(8);
     printf("[Esc] Sair");
@@ -498,7 +529,7 @@ void cadastroApostadores(typeApostador apostadores[TF], int &tl)
                 strcpy(apostadores[tl].CPF, auxCPF);
                 strcpy(apostadores[tl].nome, auxNome);
                 strcpy(apostadores[tl].telefone, auxTel);
-                msgSucesso("Apostador cadastrado com sucesso!",14);
+                msgSucesso("Apostador cadastrado com sucesso!", 14);
                 tl++;
             }
             else
@@ -542,7 +573,7 @@ void cadastroConcursos(typeConcurso concursos[TF], int &tl)
                 for (int i = 0; i < 5; i++)
                     concursos[i].numeroSorteado[i] = 0;
 
-                msgSucesso("Concurso cadastrado com sucesso!",12);   
+                msgSucesso("Concurso cadastrado com sucesso!", 12);
                 tl++;
             }
             else
@@ -561,7 +592,7 @@ void cadastroConcursos(typeConcurso concursos[TF], int &tl)
     }
 }
 
-void cadastroApostas(typeAposta apostas[TF], int &tl, typeConcurso concursos[TF], int tlc, typeApostador apostadores[TF], int tlp, int numAposta[60])
+void cadastroApostas(typeAposta apostas[TF], int &tl, typeConcurso concursos[TF], int tlc, typeApostador apostadores[TF], int tlp, int numAposta[60], int &dado)
 {
     int auxId, pos, posCPF;
     cabecalhoCadastroAposta(0, "", 0);
@@ -611,12 +642,12 @@ void cadastroApostas(typeAposta apostas[TF], int &tl, typeConcurso concursos[TF]
                                 {
                                     apostas[tl].qtdeNumApostado = qtde;
                                     cabecalhoCadastroAposta(1, auxCPF, auxConc);
-                                    apostarNum(qtde, apostas, tl, numAposta);
+                                    apostarNum(qtde, apostas, tl, numAposta, dado);
                                     apostas[tl].idConc = auxConc;
                                     apostas[tl].idAposta = auxId;
                                     strcpy(apostas[tl].CPF, auxCPF);
                                     apostadores[posCPF].jaApostou = 1;
-                                    msgSucesso("Aposta cadastrada com sucesso!",12);
+                                    msgSucesso("Aposta cadastrada com sucesso!", 12);
                                     cod = 1;
                                     tl++;
                                 }
@@ -1124,6 +1155,50 @@ void excluirApostadores(typeApostador apostadores[TF], int &tl)
     }
 }
 
+void relatorioNumSorteio(int numSorteio[60],int dado)
+{
+    int numMenosValor, numMaisValor = 0;
+    int numMaisNum, numMenosNum;
+    gotoxy(44, 4);
+    textcolor(13);
+    printf("------------------------ Exibir Num Sorteio ----------------------\n");
+    
+    if (dado == 0)
+        msgErro("Nao ha dados suficientes!", 6);
+    else
+    {
+        int j = 0, cor = 14;
+
+        for (int x = 0; x < 60; x++)
+        {
+            if (numSorteio[x] > numMaisValor)
+            {
+                numMaisValor = numSorteio[x];
+                numMaisNum = x + 1;
+            }
+            
+        }
+        
+
+        for (int i = 0; i < 60; i++)
+        {
+            textcolor(cor);
+            gotoxy(44, 5 + j);
+            printf("------------------------------------------------------------------");
+            gotoxy(44, 6 + j);
+            printf("Numero que mais aparece e: %d, e ele aparece %d", numMaisNum, numMaisValor);
+            gotoxy(44, 7 + j);
+            printf("Numero que menos aparece e: %d, e ele aparece %d", numMenosNum, numMenosValor);
+            gotoxy(44, 8 + j);
+            cor -= 1;
+
+            if (j == 25 || j == 24)
+                proximaPag(j, cor);
+        }
+        getch();
+    }
+}
+
 int main(void)
 {
     textcolor(14);
@@ -1137,7 +1212,7 @@ int main(void)
     typeConcurso concursos[TF];
     typeAposta apostas[TF];
     int tlp = 0, tlc = 0, tla = 0;
-    int numAposta[60], numSorteio[60];
+    int numAposta[60], numSorteio[60], dadosAposta, dadosSorteio;
     char opcao, subOpcao;
     do
     {
@@ -1168,7 +1243,7 @@ int main(void)
                     break;
 
                 case 'E':
-                    realizarConcurso(concursos, tlc, numSorteio);
+                    realizarConcurso(concursos, tlc, numSorteio, dadosSorteio);
                     break;
                 }
             } while (subOpcao != 27);
@@ -1206,11 +1281,36 @@ int main(void)
                 switch (subOpcao)
                 {
                 case 'A':
-                    cadastroApostas(apostas, tla, concursos, tlc, apostadores, tlp, numAposta);
+                    cadastroApostas(apostas, tla, concursos, tlc, apostadores, tlp, numAposta, dadosAposta);
                     break;
 
                 case 'B':
                     exibirTodasApostas(apostas, tla);
+                    break;
+                }
+            } while (subOpcao != 27);
+            break;
+
+        case 'D':
+            do
+            {
+                subOpcao = menuSubRelatorios();
+                switch (subOpcao)
+                {
+                case 'A':
+
+                    break;
+
+                case 'B':
+
+                    break;
+
+                case 'C':
+
+                    break;
+
+                case 'D':
+
                     break;
                 }
             } while (subOpcao != 27);
