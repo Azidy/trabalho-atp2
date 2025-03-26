@@ -207,12 +207,11 @@ void realizarConcurso(typeConcurso concursos[TF], int tl, int numSorteado[60], i
                     {
                         for (int j = 0; j < 60; j++)
                         {
-                            if ((concursos[pos].numeroSorteado[x]) - 1 == j){
+                            if ((concursos[pos].numeroSorteado[x]) - 1 == j)
+                            {
                                 numSorteado[j] += 1;
                                 dado = 1;
                             }
-                                
-
                         }
                     }
 
@@ -1155,14 +1154,14 @@ void excluirApostadores(typeApostador apostadores[TF], int &tl)
     }
 }
 
-void relatorioNumSorteio(int numSorteio[60],int dado)
+void relatorioNumSorteio(int numSorteio[60], int dado)
 {
     int numMenosValor, numMaisValor = 0;
     int numMaisNum, numMenosNum;
     gotoxy(44, 4);
     textcolor(13);
     printf("------------------------ Exibir Num Sorteio ----------------------\n");
-    
+
     if (dado == 0)
         msgErro("Nao ha dados suficientes!", 6);
     else
@@ -1176,9 +1175,7 @@ void relatorioNumSorteio(int numSorteio[60],int dado)
                 numMaisValor = numSorteio[x];
                 numMaisNum = x + 1;
             }
-            
         }
-        
 
         for (int i = 0; i < 60; i++)
         {
@@ -1306,7 +1303,7 @@ int main(void)
                     break;
 
                 case 'C':
-
+                    relatorioNumSorteio(numSorteio, dadosSorteio);
                     break;
 
                 case 'D':
