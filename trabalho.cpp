@@ -1,7 +1,7 @@
 // Codigo feito por Diego Felippe da Fonseca Calesco e Heitor Franzo Justo
 
 /* --- Comentarios: ---
--ULTIMA ATUALIZACAO: 25/03/2025 04:49 AM
+-ULTIMA ATUALIZACAO: 27/03/2025 05:47 AM
 */
 
 #include <stdio.h>
@@ -87,13 +87,13 @@ int achouNumApostado(int numApostadoAnalise[10], int tl, int numApostado)
         return -1;
 }
 
-int AchouSorteio(int NumSorteado[5], int QtdeNumApostado, int valorNumApostado)
+int AchouSorteio(int NumSorteado[5], int tl, int valorNumApostado)
 {
     int i = 0;
-    while (i < QtdeNumApostado && valorNumApostado != NumSorteado[i])
+    while (i < tl && valorNumApostado != NumSorteado[i])
         i++;
 
-    if (i < QtdeNumApostado)
+    if (i < tl)
         return 1;
     else
         return 0;
@@ -228,7 +228,7 @@ void realizarConcurso(typeConcurso concursos[TF], int tl, int numSorteado[60], i
                     while (i < 5)
                     {
                         numero_sorteado = (rand() % 60) + 1;
-                        if (achouNumSorteado(concursos[pos].numeroSorteado, i, numero_sorteado) == -1 && numero_sorteado!=0)
+                        if (achouNumSorteado(concursos[pos].numeroSorteado, i, numero_sorteado) == -1 && numero_sorteado != 0)
                         {
                             concursos[pos].numeroSorteado[i] = numero_sorteado;
                             i++;
@@ -1247,13 +1247,13 @@ void relatorioNumSorteio(int numSorteio[60], int dado)
 void InterseccaoConjuntos(int NumSorteado[5], int NumApostado[10], int qtdeNumApostado, int &qtdeAcerto, int numAcertados[5])
 {
     int i;
-    qtdeAcerto = 0;
+    qtdeAcerto=0;
     for (i = 0; i < qtdeNumApostado; i++)
-        if (AchouSorteio(NumSorteado, qtdeNumApostado, NumApostado[i]))
-                numAcertados[qtdeAcerto++] = NumApostado[i];
+        if (AchouSorteio(NumSorteado, 5, NumApostado[i]))
+            numAcertados[qtdeAcerto++] = NumApostado[i];
 }
 
-void ganhouAposta(typeConcurso concursos[TF], typeAposta apostas[TF], int posAposta, int posConcurso, int t, int cor)
+void ganhouAposta(typeConcurso concursos[TF], typeAposta apostas[TF], int posAposta, int posConcurso, int &t, int &cor)
 {
     InterseccaoConjuntos(concursos[posConcurso].numeroSorteado, apostas[posAposta].numApostado, apostas[posAposta].qtdeNumApostado, apostas[posAposta].qtdeNumAcertado, apostas[posAposta].numAcertado);
     int qtdeAcerto = apostas[posAposta].qtdeNumAcertado;
@@ -1274,7 +1274,6 @@ void ganhouAposta(typeConcurso concursos[TF], typeAposta apostas[TF], int posApo
             printf("[%d] ", apostas[posAposta].numAcertado[j]);
         }
 
-
         gotoxy(44, t + 3);
 
         switch (qtdeAcerto)
@@ -1289,8 +1288,8 @@ void ganhouAposta(typeConcurso concursos[TF], typeAposta apostas[TF], int posApo
             printf("Acerto de QUINA!");
             break;
         }
-
-        getch();
+        t += 5;
+        cor--;
     }
 }
 
@@ -1306,11 +1305,7 @@ void relatorioGanhadores(typeConcurso concursos[TF], int tl, typeAposta apostas[
         {
             for (int j = 0; j < tla; j++)
                 if (apostas[j].idConc == concursos[i].idConc)
-                {
                     ganhouAposta(concursos, apostas, j, i, t, cor);
-                    t += 5;
-                    cor--;
-                }
         }
     }
     getch();
