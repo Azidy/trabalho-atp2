@@ -35,7 +35,7 @@ struct typeApostador
 
 struct typeAposta
 {
-    int idAposta, idConc, qtdeNumApostado, numApostado[10];
+    int idAposta, idConc, qtdeNumApostado = 0, numApostado[10], numAcertado[5], qtdeNumAcertado = 0;
     char CPF[12];
 };
 
@@ -79,6 +79,30 @@ int achouNumApostado(int numApostadoAnalise[10], int tl, int numApostado)
 {
     int i = 0;
     while (i < tl && numApostadoAnalise[i] != numApostado)
+        i++;
+
+    if (i < tl)
+        return i;
+    else
+        return -1;
+}
+
+int AchouSorteio(int NumSorteado[5], int QtdeNumApostado, int valorNumApostado)
+{
+    int i = 0;
+    while (i < QtdeNumApostado && valorNumApostado != NumSorteado[i])
+        i++;
+
+    if (i < QtdeNumApostado)
+        return 1;
+    else
+        return 0;
+}
+
+int achouNumSorteado(int numSorteadolise[5], int tl, int numSorteado)
+{
+    int i = 0;
+    while (i < tl && numSorteadolise[i] != numSorteado)
         i++;
 
     if (i < tl)
@@ -200,8 +224,16 @@ void realizarConcurso(typeConcurso concursos[TF], int tl, int numSorteado[60], i
                 if (concursos[pos].status == 0)
                 {
                     concursos[pos].status = 1;
-                    for (int i = 0; i < 5; i++)
-                        concursos[pos].numeroSorteado[i] = (rand() % 60) + 1;
+                    int i = 0, numero_sorteado;
+                    while (i < 5)
+                    {
+                        numero_sorteado = (rand() % 60) + 1;
+                        if (achouNumSorteado(concursos[pos].numeroSorteado, i, numero_sorteado) == -1 && numero_sorteado!=0)
+                        {
+                            concursos[pos].numeroSorteado[i] = numero_sorteado;
+                            i++;
+                        }
+                    }
 
                     for (int x = 0; x < 5; x++)
                     {
@@ -263,6 +295,7 @@ void molduraSistema(int cls)
 
     textcolor(11);
     DesenhaMoldura(1, 10, 3, 110);
+    DesenhaMoldura(25, 10, 27, 42);
     DesenhaMoldura(1, 10, 30, 110);
     DesenhaMoldura(3, 42, 30, 42);
     DesenhaMoldura(12, 10, 30, 42);
@@ -272,13 +305,28 @@ void molduraSistema(int cls)
     printf("%c", 204);
     gotoxy(110, 3);
     printf("%c", 185);
-
+    gotoxy(10, 25);
+    printf("%c", 204);
+    gotoxy(10, 27);
+    printf("%c", 204);
     gotoxy(42, 3);
     printf("%c", 203);
+    gotoxy(42, 27);
+    printf("%c", 185);
+    gotoxy(42, 25);
+    printf("%c", 185);
     gotoxy(42, 12);
     printf("%c", 185);
     gotoxy(42, 30);
     printf("%c", 202);
+    textcolor(13);
+    gotoxy(12, 26);
+    printf("== CODIGO DESENVOLVIDO POR ==");
+    textcolor(9);
+    gotoxy(12, 28);
+    printf("Heitor Franzo Justo");
+    gotoxy(12, 29);
+    printf("Diego Felippe da F. Calesco");
     textcolor(7);
 }
 
@@ -309,7 +357,7 @@ char menuInicial()
     gotoxy(12, 6);
     printf("[C] Menu de Apostas");
     gotoxy(12, 7);
-    printf("[D] Relatorios");
+    printf("[D] Menu de Relatorios");
     textcolor(8);
     gotoxy(12, 10);
     printf("[Esc] Sair");
@@ -490,11 +538,12 @@ void cabecalhoCadastroAposta(int exibir, char apostador[12], int concurso)
 
     if (exibir == 1)
     {
+        textcolor(9);
         gotoxy(12, 13);
         printf("Aposta sendo feita por:");
         gotoxy(12, 15);
         printf("CPF do apostador: %s", apostador);
-        gotoxy(12, 17);
+        gotoxy(12, 16);
         printf("Id do concurso: %d", concurso);
     }
 
@@ -519,7 +568,7 @@ void cadastroApostadores(typeApostador apostadores[TF], int &tl)
             gets(auxNome);
 
             gotoxy(44, 12);
-            printf("Digite o telefone do apostador: ");
+            printf("Digite o telefone do apostador com DDD: ");
             fflush(stdin);
             gets(auxTel);
 
@@ -607,14 +656,14 @@ void cadastroApostas(typeAposta apostas[TF], int &tl, typeConcurso concursos[TF]
             {
                 if (achouAposta(apostas, tl, auxId) == -1)
                 {
-                    char auxCPF[12];
+                    char auxCPF[12] = {};
                     gotoxy(44, 10);
                     printf("Digite o CPF do apostador que ira apostar: ");
                     fflush(stdin);
                     gets(auxCPF);
 
                     posCPF = achouCPF(apostadores, tlp, auxCPF);
-                    if (pos != -1)
+                    if (posCPF != -1)
                     {
                         int auxConc;
                         gotoxy(44, 12);
@@ -625,34 +674,39 @@ void cadastroApostas(typeAposta apostas[TF], int &tl, typeConcurso concursos[TF]
                         pos = achouConcurso(concursos, tlc, auxConc);
                         if (pos != -1)
                         {
-                            int qtde, cod = 0;
-                            do
+                            if (concursos[pos].status == 1)
                             {
-                                limparPainel(43, 4, 109, 29);
-                                cabecalhoCadastroAposta(1, auxCPF, auxConc);
-                                gotoxy(44, 8);
-                                printf("Quantos numeros deseja apostar?");
-                                gotoxy(44, 10);
-                                textcolor(14);
-                                printf("[Selecione entre 5 a 10 numeros]: ");
-                                textcolor(7);
-                                scanf("%d", &qtde);
-                                if (qtde > 4 && qtde < 11)
+                                int qtde, cod = 0;
+                                do
                                 {
-                                    apostas[tl].qtdeNumApostado = qtde;
+                                    limparPainel(43, 4, 109, 29);
                                     cabecalhoCadastroAposta(1, auxCPF, auxConc);
-                                    apostarNum(qtde, apostas, tl, numAposta, dado);
-                                    apostas[tl].idConc = auxConc;
-                                    apostas[tl].idAposta = auxId;
-                                    strcpy(apostas[tl].CPF, auxCPF);
-                                    apostadores[posCPF].jaApostou = 1;
-                                    msgSucesso("Aposta cadastrada com sucesso!", 12);
-                                    cod = 1;
-                                    tl++;
-                                }
-                                else if (qtde != 0)
-                                    msgErro("Digite a quantidade solicitada!", 12);
-                            } while (cod == 0 && qtde != 0);
+                                    gotoxy(44, 8);
+                                    printf("Quantos numeros deseja apostar?");
+                                    gotoxy(44, 10);
+                                    textcolor(14);
+                                    printf("[Selecione entre 5 a 10 numeros]: ");
+                                    textcolor(7);
+                                    scanf("%d", &qtde);
+                                    if (qtde > 4 && qtde < 11)
+                                    {
+                                        apostas[tl].qtdeNumApostado = qtde;
+                                        cabecalhoCadastroAposta(1, auxCPF, auxConc);
+                                        apostarNum(qtde, apostas, tl, numAposta, dado);
+                                        apostas[tl].idConc = auxConc;
+                                        apostas[tl].idAposta = auxId;
+                                        strcpy(apostas[tl].CPF, auxCPF);
+                                        apostadores[posCPF].jaApostou = 1;
+                                        msgSucesso("Aposta cadastrada com sucesso!", 12);
+                                        cod = 1;
+                                        tl++;
+                                    }
+                                    else if (qtde != 0)
+                                        msgErro("Digite a quantidade solicitada!", 12);
+                                } while (cod == 0 && qtde != 0);
+                            }
+                            else
+                                msgErro("Este concurso esta fechado, pois já foi apurado!", 14);
                         }
                         else
                             msgErro("Este ID de concurso nao foi encontrado!", 14);
@@ -664,7 +718,7 @@ void cadastroApostas(typeAposta apostas[TF], int &tl, typeConcurso concursos[TF]
                     msgErro("Ja existe uma aposta com esse ID!", 10);
 
                 limparPainel(43, 4, 109, 29);
-                limparPainel(12, 13, 41, 17);
+                limparPainel(12, 13, 41, 24);
                 cabecalhoCadastroAposta(0, "", 0);
                 gotoxy(44, 8);
                 printf("Digite o ID da aposta: ");
@@ -681,6 +735,7 @@ void cadastroApostas(typeAposta apostas[TF], int &tl, typeConcurso concursos[TF]
 
 void exibirConcurso(typeConcurso concursos[TF], int pos)
 {
+    textcolor(9);
     gotoxy(12, 14);
     printf("Id do concurso: %d", concursos[pos].idConc);
     gotoxy(12, 15);
@@ -726,12 +781,13 @@ void exibirTodosConcursos(typeConcurso concursos[TF], int tl)
 
 void exibirApostador(typeApostador apostadores[TF], int pos)
 {
+    textcolor(9);
     gotoxy(12, 14);
-    printf("CPF do apostador: %s\n", apostadores[pos].CPF);
+    printf("CPF do apostador: %s", apostadores[pos].CPF);
     gotoxy(12, 15);
-    printf("Nome: %s\n", apostadores[pos].nome);
+    printf("Nome: %s", apostadores[pos].nome);
     gotoxy(12, 16);
-    printf("Fone: %s\n", apostadores[pos].telefone);
+    printf("Fone: %s", apostadores[pos].telefone);
 }
 
 void exibirTodosApostadores(typeApostador apostadores[TF], int tl)
@@ -756,7 +812,7 @@ void exibirTodosApostadores(typeApostador apostadores[TF], int tl)
             printf("Nome: %s", apostadores[i].nome);
             gotoxy(44, 8 + j);
             printf("Fone: %s", apostadores[i].telefone);
-            j += 4;
+            j += 5;
             cor--;
 
             if (j == 24 || j == 23)
@@ -853,7 +909,7 @@ void alterarDadoConcursos(typeConcurso concursos[TF], int pos, int opr)
             msgErro("O concurso ja foi apurado!", 6);
 
         break;
-        limparPainel(12, 13, 41, 29);
+        limparPainel(12, 13, 41, 25);
     }
 }
 
@@ -888,7 +944,7 @@ void alterarConcursos(typeConcurso concursos[TF], int tl)
                 limparPainel(11, 4, 41, 11);
                 do
                 {
-
+                    limparPainel(12, 13, 41, 24);
                     limparPainel(43, 4, 109, 29);
                     textcolor(14);
                     gotoxy(12, 13);
@@ -949,17 +1005,15 @@ void alterarDadoApostadores(typeApostador apostadores[TF], int pos, int opr)
         gets(aux);
         if (strcmp(aux, "\0") != 0)
         {
-            if (strcmp(aux, "0") != 0)
-            {
-                strcpy(apostadores[pos].telefone, aux);
-                msgSucesso("Telefone alterado com sucesso!", 10);
-            }
-            else
-                msgErro("O campo de telefone nao pode ser nulo!", 10);
+            strcpy(apostadores[pos].telefone, aux);
+            msgSucesso("Telefone alterado com sucesso!", 10);
         }
+        else
+            msgErro("O campo de telefone nao pode ser nulo!", 10);
+
         break;
     }
-    limparPainel(12, 13, 41, 29);
+    limparPainel(12, 13, 41, 25);
 }
 
 void alterarApostadores(typeApostador apostadores[TF], int tl)
@@ -994,6 +1048,7 @@ void alterarApostadores(typeApostador apostadores[TF], int tl)
                 limparPainel(11, 4, 41, 11);
                 do
                 {
+                    limparPainel(12, 13, 41, 24);
                     limparPainel(43, 4, 109, 29);
                     textcolor(14);
                     gotoxy(12, 13);
@@ -1156,8 +1211,8 @@ void excluirApostadores(typeApostador apostadores[TF], int &tl)
 
 void relatorioNumSorteio(int numSorteio[60], int dado)
 {
-    int numMenosValor, numMaisValor = 0;
-    int numMaisNum, numMenosNum;
+    int numMenosValor = 0, numMaisValor = 0;
+    int numMaisNum = 0, numMenosNum = 0;
     gotoxy(44, 4);
     textcolor(13);
     printf("------------------------ Exibir Num Sorteio ----------------------\n");
@@ -1166,8 +1221,6 @@ void relatorioNumSorteio(int numSorteio[60], int dado)
         msgErro("Nao ha dados suficientes!", 6);
     else
     {
-        int j = 0, cor = 14;
-
         for (int x = 0; x < 60; x++)
         {
             if (numSorteio[x] > numMaisValor)
@@ -1179,21 +1232,88 @@ void relatorioNumSorteio(int numSorteio[60], int dado)
 
         for (int i = 0; i < 60; i++)
         {
-            textcolor(cor);
-            gotoxy(44, 5 + j);
+            textcolor(9);
+            gotoxy(44, 5);
             printf("------------------------------------------------------------------");
-            gotoxy(44, 6 + j);
+            gotoxy(44, 6);
             printf("Numero que mais aparece e: %d, e ele aparece %d", numMaisNum, numMaisValor);
-            gotoxy(44, 7 + j);
+            gotoxy(44, 8);
             printf("Numero que menos aparece e: %d, e ele aparece %d", numMenosNum, numMenosValor);
-            gotoxy(44, 8 + j);
-            cor -= 1;
-
-            if (j == 25 || j == 24)
-                proximaPag(j, cor);
         }
         getch();
     }
+}
+
+void InterseccaoConjuntos(int NumSorteado[5], int NumApostado[10], int qtdeNumApostado, int &qtdeAcerto, int numAcertados[5])
+{
+    int i;
+    qtdeAcerto = 0;
+    for (i = 0; i < qtdeNumApostado; i++)
+        if (AchouSorteio(NumSorteado, qtdeNumApostado, NumApostado[i]))
+                numAcertados[qtdeAcerto++] = NumApostado[i];
+}
+
+void ganhouAposta(typeConcurso concursos[TF], typeAposta apostas[TF], int posAposta, int posConcurso, int t, int cor)
+{
+    InterseccaoConjuntos(concursos[posConcurso].numeroSorteado, apostas[posAposta].numApostado, apostas[posAposta].qtdeNumApostado, apostas[posAposta].qtdeNumAcertado, apostas[posAposta].numAcertado);
+    int qtdeAcerto = apostas[posAposta].qtdeNumAcertado;
+    if (qtdeAcerto >= 3)
+    {
+        textcolor(cor);
+        gotoxy(44, t + 1);
+        printf("------------------------------------------------------------------");
+        gotoxy(44, t + 2);
+        printf("ID da aposta: %d", apostas[posAposta].idAposta);
+        gotoxy(44, t + 4);
+        printf("O apostador de CPF %s acertou %d numeros do concurso %d!", apostas[posAposta].CPF, qtdeAcerto, concursos[posConcurso].idConc);
+        gotoxy(44, t + 5);
+        printf("Numeros acertados:");
+        for (int j = 0, espaco = 0; j < apostas[posAposta].qtdeNumAcertado; j++, espaco += 4)
+        {
+            gotoxy(63 + espaco, 5 + t);
+            printf("[%d] ", apostas[posAposta].numAcertado[j]);
+        }
+
+
+        gotoxy(44, t + 3);
+
+        switch (qtdeAcerto)
+        {
+        case 3:
+            printf("Acerto de terno!");
+            break;
+        case 4:
+            printf("Acerto de quadra!");
+            break;
+        case 5:
+            printf("Acerto de QUINA!");
+            break;
+        }
+
+        getch();
+    }
+}
+
+void relatorioGanhadores(typeConcurso concursos[TF], int tl, typeAposta apostas[TF], int tla)
+{
+    gotoxy(44, 4);
+    textcolor(13);
+    printf("------------------------ Exibir Ganhadores ----------------------\n");
+    int t = 4, cor = 14;
+    for (int i = 0; i < tl; i++)
+    {
+        if (concursos[i].status == 1)
+        {
+            for (int j = 0; j < tla; j++)
+                if (apostas[j].idConc == concursos[i].idConc)
+                {
+                    ganhouAposta(concursos, apostas, j, i, t, cor);
+                    t += 5;
+                    cor--;
+                }
+        }
+    }
+    getch();
 }
 
 int main(void)
@@ -1295,7 +1415,7 @@ int main(void)
                 switch (subOpcao)
                 {
                 case 'A':
-
+                    relatorioGanhadores(concursos, tlc, apostas, tla);
                     break;
 
                 case 'B':
