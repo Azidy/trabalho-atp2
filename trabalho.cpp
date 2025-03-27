@@ -1211,8 +1211,8 @@ void excluirApostadores(typeApostador apostadores[TF], int &tl)
 
 void relatorioNumSorteio(int numSorteio[60], int dado)
 {
-    int numMenosValor = 0, numMaisValor = 0;
-    int numMaisNum = 0, numMenosNum = 0;
+    int numMenosValor = __INT_MAX__, numMaisValor = 0;
+    int numMenosNum = 0, numMaisNum = 0;
     gotoxy(44, 4);
     textcolor(13);
     printf("------------------------ Exibir Num Sorteio ----------------------\n");
@@ -1228,6 +1228,12 @@ void relatorioNumSorteio(int numSorteio[60], int dado)
                 numMaisValor = numSorteio[x];
                 numMaisNum = x + 1;
             }
+
+            if (numSorteio[x] < numMenosValor)
+            {
+                numMenosValor = numSorteio[x];
+                numMenosNum = x + 1;
+            }
         }
 
         for (int i = 0; i < 60; i++)
@@ -1239,6 +1245,47 @@ void relatorioNumSorteio(int numSorteio[60], int dado)
             printf("Numero que mais aparece e: %d, e ele aparece %d", numMaisNum, numMaisValor);
             gotoxy(44, 8);
             printf("Numero que menos aparece e: %d, e ele aparece %d", numMenosNum, numMenosValor);
+        }
+        getch();
+    }
+}
+
+void relatorioNumAposta(int numAposta[60], int dado)
+{
+    int numMenosValor = __INT_MAX__, numMaisValor = 0;
+    int numMenosNum = 0, numMaisNum = 0;
+    gotoxy(44, 4);
+    textcolor(13);
+    printf("------------------------ Exibir Num Aposta ----------------------\n");
+
+    if (dado == 0)
+        msgErro("Nao ha dados suficientes!", 6);
+    else
+    {
+        for (int x = 0; x < 60; x++)
+        {
+            if (numAposta[x] > numMaisValor)
+            {
+                numMaisValor = numAposta[x];
+                numMaisNum = x + 1;
+            }
+
+            if (numAposta[x] < numMenosValor)
+            {
+                numMenosValor = numAposta[x];
+                numMenosNum = x + 1;
+            }
+        }
+
+        for (int i = 0; i < 60; i++)
+        {
+            textcolor(9);
+            gotoxy(44, 5);
+            printf("------------------------------------------------------------------");
+            gotoxy(44, 6);
+            printf("Numero mais apostado e: %d, e ele aparece %d", numMaisNum, numMaisValor);
+            gotoxy(44, 8);
+            printf("Numero menos apostado e: %d, e ele aparece %d", numMenosNum, numMenosValor);
         }
         getch();
     }
@@ -1426,7 +1473,7 @@ int main(void)
                     break;
 
                 case 'D':
-
+                    relatorioNumAposta(numAposta, dadoAposta);
                     break;
                 }
             } while (subOpcao != 27);
