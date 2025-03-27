@@ -674,7 +674,7 @@ void cadastroApostas(typeAposta apostas[TF], int &tl, typeConcurso concursos[TF]
                         pos = achouConcurso(concursos, tlc, auxConc);
                         if (pos != -1)
                         {
-                            if (concursos[pos].status == 1)
+                            if (concursos[pos].status != 1)
                             {
                                 int qtde, cod = 0;
                                 do
@@ -706,7 +706,7 @@ void cadastroApostas(typeAposta apostas[TF], int &tl, typeConcurso concursos[TF]
                                 } while (cod == 0 && qtde != 0);
                             }
                             else
-                                msgErro("Este concurso esta fechado, pois já foi apurado!", 14);
+                                msgErro("Este concurso esta fechado, pois ja foi apurado!", 14);
                         }
                         else
                             msgErro("Este ID de concurso nao foi encontrado!", 14);
