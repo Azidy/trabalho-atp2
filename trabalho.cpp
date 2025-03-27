@@ -1,7 +1,7 @@
 // Codigo feito por Diego Felippe da Fonseca Calesco e Heitor Franzo Justo
 
 /* --- Comentarios: ---
--ULTIMA ATUALIZACAO: 27/03/2025 05:47 AM
+-ULTIMA ATUALIZACAO: 27/03/2025 05:03 PM
 */
 
 #include <stdio.h>
@@ -674,7 +674,7 @@ void cadastroApostas(typeAposta apostas[TF], int &tl, typeConcurso concursos[TF]
                         pos = achouConcurso(concursos, tlc, auxConc);
                         if (pos != -1)
                         {
-                            if (concursos[pos].status != 1)
+                            if (concursos[pos].status == 1)
                             {
                                 int qtde, cod = 0;
                                 do
@@ -1247,7 +1247,7 @@ void relatorioNumSorteio(int numSorteio[60], int dado)
 void InterseccaoConjuntos(int NumSorteado[5], int NumApostado[10], int qtdeNumApostado, int &qtdeAcerto, int numAcertados[5])
 {
     int i;
-    qtdeAcerto=0;
+    qtdeAcerto = 0;
     for (i = 0; i < qtdeNumApostado; i++)
         if (AchouSorteio(NumSorteado, 5, NumApostado[i]))
             numAcertados[qtdeAcerto++] = NumApostado[i];
@@ -1255,57 +1255,61 @@ void InterseccaoConjuntos(int NumSorteado[5], int NumApostado[10], int qtdeNumAp
 
 void ganhouAposta(typeConcurso concursos[TF], typeAposta apostas[TF], int posAposta, int posConcurso, int &t, int &cor)
 {
+    int qtdeAcerto =  apostas[posAposta].qtdeNumAcertado;
     InterseccaoConjuntos(concursos[posConcurso].numeroSorteado, apostas[posAposta].numApostado, apostas[posAposta].qtdeNumApostado, apostas[posAposta].qtdeNumAcertado, apostas[posAposta].numAcertado);
-    int qtdeAcerto = apostas[posAposta].qtdeNumAcertado;
-    if (qtdeAcerto >= 3)
+    gotoxy(44, t + 7);
+    printf("O apostador de CPF %s acertou %d numeros do concurso %d!", apostas[posAposta].CPF, qtdeAcerto, concursos[posConcurso].idConc);
+    gotoxy(44, t + 8);
+    printf("Numeros acertados:");
+    for (int j = 0, espaco = 0; j < apostas[posAposta].qtdeNumAcertado; j++, espaco += 4)
     {
-        textcolor(cor);
-        gotoxy(44, t + 1);
-        printf("------------------------------------------------------------------");
-        gotoxy(44, t + 2);
-        printf("ID da aposta: %d", apostas[posAposta].idAposta);
-        gotoxy(44, t + 4);
-        printf("O apostador de CPF %s acertou %d numeros do concurso %d!", apostas[posAposta].CPF, qtdeAcerto, concursos[posConcurso].idConc);
-        gotoxy(44, t + 5);
-        printf("Numeros acertados:");
-        for (int j = 0, espaco = 0; j < apostas[posAposta].qtdeNumAcertado; j++, espaco += 4)
-        {
-            gotoxy(63 + espaco, 5 + t);
-            printf("[%d] ", apostas[posAposta].numAcertado[j]);
-        }
-
-        gotoxy(44, t + 3);
-
-        switch (qtdeAcerto)
-        {
-        case 3:
-            printf("Acerto de terno!");
-            break;
-        case 4:
-            printf("Acerto de quadra!");
-            break;
-        case 5:
-            printf("Acerto de QUINA!");
-            break;
-        }
-        t += 5;
-        cor--;
+        gotoxy(63 + espaco, 8 + t);
+        printf("[%d] ", apostas[posAposta].numAcertado[j]);
     }
+
+    gotoxy(44, t + 6);
+
+    switch (qtdeAcerto)
+    {
+    case 3:
+        printf("Acerto de terno!");
+        break;
+    case 4:
+        printf("Acerto de quadra!");
+        break;
+    case 5:
+        printf("Acerto de QUINA!");
+        break;
+    }
+
+    t += 4;
+    if (t >= 23)
+        proximaPag(t, cor);
+    cor--;
 }
 
 void relatorioGanhadores(typeConcurso concursos[TF], int tl, typeAposta apostas[TF], int tla)
 {
     gotoxy(44, 4);
     textcolor(13);
-    printf("------------------------ Exibir Ganhadores ----------------------\n");
-    int t = 4, cor = 14;
+    printf("------------------------ Exibir Ganhadores ----------------------");
+    int t = 0, cor = 14;
     for (int i = 0; i < tl; i++)
     {
         if (concursos[i].status == 1)
         {
+            textcolor(cor);
+            gotoxy(44, t + 5);
+            printf("-------------------------- [CONCURSO %d] --------------------------", concursos[i].idConc);
             for (int j = 0; j < tla; j++)
                 if (apostas[j].idConc == concursos[i].idConc)
-                    ganhouAposta(concursos, apostas, j, i, t, cor);
+                    if (apostas[j].qtdeNumAcertado >= 3)
+                        ganhouAposta(concursos, apostas, j, i, t, cor);
+                    else
+                    {
+                        gotoxy(44, t + 6);
+                        printf("Nenhum apostador foi premiado neste concurso!");
+                    }
         }
     }
     getch();
