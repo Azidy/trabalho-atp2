@@ -1304,10 +1304,6 @@ void excluirApostadores(typeApostador apostadores[TF], int &tl)
     }
 }
 
-
-
-
-
 void InterseccaoConjuntos(int NumSorteado[5], int NumApostado[10], int qtdeNumApostado, int &qtdeAcerto, int numAcertados[5])
 {
     int i = 0;
@@ -1675,7 +1671,7 @@ int main(void)
                     break;
 
                 case 'D':
-                    relatorioNumAposta(numAposta, dadoAposta);
+
                     break;
                 }
             } while (subOpcao != 27);
