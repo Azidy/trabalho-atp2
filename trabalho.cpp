@@ -23,7 +23,7 @@ struct typeData
 
 struct typeConcurso
 {
-    int idConc, numeroSorteado[5], status = 0;
+    int idConc, numeroSorteado[5], status = 0, qtdePremiados = 0, jaFoiApostado = 0;
     typeData data;
 };
 
@@ -35,7 +35,7 @@ struct typeApostador
 
 struct typeAposta
 {
-    int idAposta, idConc, qtdeNumApostado = 0, numApostado[10], numAcertado[5], qtdeNumAcertado = 0;
+    int idAposta, idConc, qtdeNumApostado = 0, numApostado[10], numAcertado[5], qtdeNumAcertado = 0, qtdeTernos = 0, qtdeQuinas = 0, qtdeQuadras = 0;
     char CPF[12];
 };
 
@@ -228,7 +228,7 @@ void realizarConcurso(typeConcurso concursos[TF], int tl, int numSorteado[60], i
                     while (i < 5)
                     {
                         numero_sorteado = (rand() % 60) + 1;
-                        if (achouNumSorteado(concursos[pos].numeroSorteado, i, numero_sorteado) == -1 && numero_sorteado != 0)
+                        if (achouNumSorteado(concursos[pos].numeroSorteado, i, numero_sorteado) == -1)
                         {
                             concursos[pos].numeroSorteado[i] = numero_sorteado;
                             i++;
@@ -341,15 +341,96 @@ void proximaPag(int &j, int cor)
     limparPainel(43, 4, 109, 29);
 }
 
-char menuInicial()
+void relatorioNumSorteio(int numSorteio[60], int dado)
+{
+    int numMenosValor = __INT_MAX__, numMaisValor = 0;
+    int numMenosNum = 0, numMaisNum = 0;
+    gotoxy(44, 6);
+    textcolor(9);
+    printf("------------- Relatorio de numeros mais sorteados ---------------");
+    gotoxy(44, 8);
+    textcolor(14);
+    if (dado == 0)
+        printf("[INFO] Ate o momento, nenhum concurso foi apurado!");
+    else
+    {
+        for (int x = 0; x < 60; x++)
+        {
+            if (numSorteio[x] > numMaisValor)
+            {
+                numMaisValor = numSorteio[x];
+                numMaisNum = x + 1;
+            }
+
+            if (numSorteio[x] < numMenosValor)
+            {
+                numMenosValor = numSorteio[x];
+                numMenosNum = x + 1;
+            }
+        }
+
+        for (int i = 0; i < 60; i++)
+        {
+            gotoxy(44, 8);
+            printf("O numero que mais e sorteado e: %d, e ele aparece %d vezes.", numMaisNum, numMaisValor);
+            gotoxy(44, 10);
+            printf("O numero que menos e sorteado e: %d, e ele aparece %d vezes.", numMenosNum, numMenosValor);
+        }
+    }
+}
+
+void relatorioNumAposta(int numAposta[60], int dado)
+{
+    int numMenosValor = __INT_MAX__, numMaisValor = 0;
+    int numMenosNum = 0, numMaisNum = 0;
+    gotoxy(44, 12);
+    textcolor(9);
+    printf("------------- Relatorio de numeros mais apostados ---------------");
+    textcolor(14);
+    gotoxy(44, 14);
+    if (dado == 0)
+        printf("[INFO] Ate o momento, ainda nao foi feita nenhuma aposta!");
+    else
+    {
+        for (int x = 0; x < 60; x++)
+        {
+            if (numAposta[x] > numMaisValor)
+            {
+                numMaisValor = numAposta[x];
+                numMaisNum = x + 1;
+            }
+
+            if (numAposta[x] < numMenosValor)
+            {
+                numMenosValor = numAposta[x];
+                numMenosNum = x + 1;
+            }
+        }
+
+        for (int i = 0; i < 60; i++)
+        {
+            gotoxy(44, 14);
+            printf("O numero mais apostado e: %d, e ele aparece %d vezes.", numMaisNum, numMaisValor);
+            gotoxy(44, 16);
+            printf("O numero menos apostado e: %d, e ele aparece %d vezes.", numMenosNum, numMenosValor);
+        }
+    }
+}
+
+char menuInicial(int numSorteio[60], int dadoSorteio, int numAposta[60], int dadoAposta)
 {
 
     molduraSistema(1);
+    relatorioNumSorteio(numSorteio, dadoSorteio);
+    relatorioNumAposta(numAposta, dadoAposta);
     //-------------------------------------------------+-------------------------------------------------
     textcolor(13);
     gotoxy(11, 2);
     printf("                                           MENU PRINCIPAL                                          ");
     textcolor(10);
+    gotoxy(44, 4);
+    printf("----------- Selecione uma opcao no menu a esquerda --------------");
+
     gotoxy(12, 4);
     printf("[A] Menu de Concursos");
     gotoxy(12, 5);
@@ -357,7 +438,7 @@ char menuInicial()
     gotoxy(12, 6);
     printf("[C] Menu de Apostas");
     gotoxy(12, 7);
-    printf("[D] Menu de Relatorios");
+    printf("[D] Relatorios de premiados");
     textcolor(8);
     gotoxy(12, 10);
     printf("[Esc] Sair");
@@ -375,6 +456,8 @@ char menuSubApostadores()
     gotoxy(11, 2);
     printf("                                        MENU DE APOSTADORES                                        ");
     textcolor(10);
+    gotoxy(44, 4);
+    printf("----------- Selecione uma opcao no menu a esquerda --------------");
     gotoxy(12, 4);
     printf("[A] Cadastrar");
     gotoxy(12, 5);
@@ -400,6 +483,8 @@ char menuSubConsurso()
     gotoxy(11, 2);
     printf("                                         MENU DE CONCURSOS                                         ");
     textcolor(10);
+    gotoxy(44, 4);
+    printf("----------- Selecione uma opcao no menu a esquerda --------------");
     gotoxy(12, 4);
     printf("[A] Cadastrar");
     gotoxy(12, 5);
@@ -427,6 +512,8 @@ char menuSubAposta()
     gotoxy(11, 2);
     printf("                                          MENU DE APOSTAS                                          ");
     textcolor(10);
+    gotoxy(44, 4);
+    printf("----------- Selecione uma opcao no menu a esquerda --------------");
     gotoxy(12, 4);
     printf("[A] Cadastrar");
     gotoxy(12, 5);
@@ -448,14 +535,12 @@ char menuSubRelatorios()
     gotoxy(11, 2);
     printf("                                          MENU DE RELATORIOS                                       ");
     textcolor(10);
+    gotoxy(44, 4);
+    printf("----------- Selecione uma opcao no menu a esquerda --------------");
     gotoxy(12, 4);
     printf("[A] Ganhadores por concurso");
     gotoxy(12, 5);
     printf("[B] Acertadores especifico");
-    gotoxy(12, 6);
-    printf("[C] Mais e menos sorteio");
-    gotoxy(12, 7);
-    printf("[D] Mais e menos apostas");
     gotoxy(12, 10);
     textcolor(8);
     printf("[Esc] Sair");
@@ -473,6 +558,8 @@ char menuAlterarConcursos()
     gotoxy(11, 2);
     printf("                                      MENU DE ALTERAR CONCURSOS                                    ");
     textcolor(10);
+    gotoxy(44, 4);
+    printf("----------- Selecione uma opcao no menu a esquerda --------------");
     gotoxy(12, 4);
     printf("[A] Alterar data\n");
     gotoxy(12, 10);
@@ -492,6 +579,8 @@ char menuAlterarApostadores()
     gotoxy(11, 2);
     printf("                                     MENU DE ALTERAR APOSTADORES                                   ");
     textcolor(10);
+    gotoxy(44, 4);
+    printf("----------- Selecione uma opcao no menu a esquerda --------------");
     gotoxy(12, 4);
     printf("[A] Alterar Nome");
     textcolor(10);
@@ -509,6 +598,7 @@ char menuAlterarApostadores()
 
 void cabecalhoCadastro(char mensagem[10], int tipo)
 {
+    limparPainel(44, 4, 109, 4);
     textcolor(13);
     gotoxy(44, 4);
     printf("-------------------- Cadastro de %s --------------------", mensagem);
@@ -529,9 +619,10 @@ void cabecalhoCadastro(char mensagem[10], int tipo)
 
 void cabecalhoCadastroAposta(int exibir, char apostador[12], int concurso)
 {
+    limparPainel(44, 4, 109, 4);
     textcolor(13);
     gotoxy(44, 4);
-    printf("-------------------- Cadastro de apostas --------------------\n");
+    printf("-------------------- Cadastro de apostas --------------------");
     gotoxy(44, 6);
     textcolor(14);
     printf("[INFO] Para sair do cadastro de apostas, digite [0]");
@@ -674,8 +765,9 @@ void cadastroApostas(typeAposta apostas[TF], int &tl, typeConcurso concursos[TF]
                         pos = achouConcurso(concursos, tlc, auxConc);
                         if (pos != -1)
                         {
-                            if (concursos[pos].status == 1)
+                            if (concursos[pos].status != 1)
                             {
+                                concursos[pos].jaFoiApostado = 1;
                                 int qtde, cod = 0;
                                 do
                                 {
@@ -1013,7 +1105,7 @@ void alterarDadoApostadores(typeApostador apostadores[TF], int pos, int opr)
 
         break;
     }
-    limparPainel(12, 13, 41, 25);
+    limparPainel(12, 13, 41, 24);
 }
 
 void alterarApostadores(typeApostador apostadores[TF], int tl)
@@ -1126,26 +1218,29 @@ void excluirConcursos(typeConcurso concursos[TF], int &tl)
             else
             {
                 if (concursos[pos].status == 0)
-                {
-                    confirmaExcluir(1, pos, "Concurso", NULL, concursos);
-
-                    while (opcao != 'S' && opcao != 'N')
-                        opcao = toupper(getch());
-
-                    switch (opcao)
+                    if (concursos[pos].jaFoiApostado == 0)
                     {
-                    case 'S':
-                        for (; pos < tl - 1; pos++)
-                            concursos[pos] = concursos[pos + 1];
-                        tl--;
-                        msgSucesso("Exclusao do concurso realizada com sucesso!", 14);
-                        break;
-                    case 'N':
-                        msgSucesso("Exclusao do concurso cancelada!", 14);
-                        return;
-                        break;
+                        confirmaExcluir(1, pos, "Concurso", NULL, concursos);
+
+                        while (opcao != 'S' && opcao != 'N')
+                            opcao = toupper(getch());
+
+                        switch (opcao)
+                        {
+                        case 'S':
+                            for (; pos < tl - 1; pos++)
+                                concursos[pos] = concursos[pos + 1];
+                            tl--;
+                            msgSucesso("Exclusao do concurso realizada com sucesso!", 14);
+                            break;
+                        case 'N':
+                            msgSucesso("Exclusao do concurso cancelada!", 14);
+                            return;
+                            break;
+                        }
                     }
-                }
+                    else
+                        msgErro("Essa concurso nao pode ser deletado, pois ja foi apostado!", 10);
                 else
                     msgErro("Esse concurso nao pode ser deletado pois ja foi apurado!", 10);
             }
@@ -1209,109 +1304,259 @@ void excluirApostadores(typeApostador apostadores[TF], int &tl)
     }
 }
 
-void relatorioNumSorteio(int numSorteio[60], int dado)
-{
-    int numMenosValor = 0, numMaisValor = 0;
-    int numMaisNum = 0, numMenosNum = 0;
-    gotoxy(44, 4);
-    textcolor(13);
-    printf("------------------------ Exibir Num Sorteio ----------------------\n");
-
-    if (dado == 0)
-        msgErro("Nao ha dados suficientes!", 6);
-    else
-    {
-        for (int x = 0; x < 60; x++)
-        {
-            if (numSorteio[x] > numMaisValor)
-            {
-                numMaisValor = numSorteio[x];
-                numMaisNum = x + 1;
-            }
-        }
-
-        for (int i = 0; i < 60; i++)
-        {
-            textcolor(9);
-            gotoxy(44, 5);
-            printf("------------------------------------------------------------------");
-            gotoxy(44, 6);
-            printf("Numero que mais aparece e: %d, e ele aparece %d", numMaisNum, numMaisValor);
-            gotoxy(44, 8);
-            printf("Numero que menos aparece e: %d, e ele aparece %d", numMenosNum, numMenosValor);
-        }
-        getch();
-    }
-}
-
 void InterseccaoConjuntos(int NumSorteado[5], int NumApostado[10], int qtdeNumApostado, int &qtdeAcerto, int numAcertados[5])
 {
-    int i;
+    int i = 0;
     qtdeAcerto = 0;
     for (i = 0; i < qtdeNumApostado; i++)
         if (AchouSorteio(NumSorteado, 5, NumApostado[i]))
             numAcertados[qtdeAcerto++] = NumApostado[i];
 }
 
-void ganhouAposta(typeConcurso concursos[TF], typeAposta apostas[TF], int posAposta, int posConcurso, int &t, int &cor)
+void ganhouAposta(typeConcurso concursos[TF], typeAposta apostas[TF], int posAposta, int posConcurso, int tlc)
 {
-    int qtdeAcerto =  apostas[posAposta].qtdeNumAcertado;
     InterseccaoConjuntos(concursos[posConcurso].numeroSorteado, apostas[posAposta].numApostado, apostas[posAposta].qtdeNumApostado, apostas[posAposta].qtdeNumAcertado, apostas[posAposta].numAcertado);
-    gotoxy(44, t + 7);
-    printf("O apostador de CPF %s acertou %d numeros do concurso %d!", apostas[posAposta].CPF, qtdeAcerto, concursos[posConcurso].idConc);
-    gotoxy(44, t + 8);
-    printf("Numeros acertados:");
-    for (int j = 0, espaco = 0; j < apostas[posAposta].qtdeNumAcertado; j++, espaco += 4)
-    {
-        gotoxy(63 + espaco, 8 + t);
-        printf("[%d] ", apostas[posAposta].numAcertado[j]);
-    }
-
-    gotoxy(44, t + 6);
+    int i, qtdeAcerto = apostas[posAposta].qtdeNumAcertado;
+    apostas[posAposta].qtdeTernos = 0;
+    apostas[posAposta].qtdeQuadras = 0;
+    apostas[posAposta].qtdeQuinas = 0;
 
     switch (qtdeAcerto)
     {
     case 3:
-        printf("Acerto de terno!");
+        apostas[posAposta].qtdeTernos++;
         break;
     case 4:
-        printf("Acerto de quadra!");
+        apostas[posAposta].qtdeQuadras++;
         break;
     case 5:
-        printf("Acerto de QUINA!");
+        apostas[posAposta].qtdeQuinas++;
         break;
     }
-
-    t += 4;
-    if (t >= 23)
-        proximaPag(t, cor);
-    cor--;
 }
 
-void relatorioGanhadores(typeConcurso concursos[TF], int tl, typeAposta apostas[TF], int tla)
+void limparRelatorio(int &linhasNaTela, int cor, int t)
+{
+    proximaPag(t, cor);
+    linhasNaTela = 3;
+}
+
+void relatorioGanhadores(typeConcurso concursos[TF], int tl, typeAposta apostas[TF], int tla, int qtdeApurado)
 {
     gotoxy(44, 4);
     textcolor(13);
     printf("------------------------ Exibir Ganhadores ----------------------");
-    int t = 0, cor = 14;
-    for (int i = 0; i < tl; i++)
+    if (qtdeApurado == 0)
+        msgErro("Ate o momento, nenhum concurso foi apurado!", 6);
+    else
     {
-        if (concursos[i].status == 1)
+        int t = 1, cor = 14, l, i, cont = 0, linhasNaTela = 4;
+        for (int i = 0; i < tl; i++)
+            if (concursos[i].status == 1)
+                for (int j = 0; j < tla; j++)
+                    if (apostas[j].idConc == concursos[i].idConc)
+                        ganhouAposta(concursos, apostas, j, i, tl);
+
+        for (l = 0; l < tl; l++)
         {
-            textcolor(cor);
-            gotoxy(44, t + 5);
-            printf("-------------------------- [CONCURSO %d] --------------------------", concursos[i].idConc);
-            for (int j = 0; j < tla; j++)
-                if (apostas[j].idConc == concursos[i].idConc)
-                    if (apostas[j].qtdeNumAcertado >= 3)
-                        ganhouAposta(concursos, apostas, j, i, t, cor);
-                    else
+            t = 1;
+            linhasNaTela = 4;
+            gotoxy(44, 4);
+            textcolor(13);
+            printf("------------------------ Exibir Ganhadores ----------------------");
+            if (concursos[l].status == 1)
+            {
+                textcolor(cor);
+                gotoxy(44, t + linhasNaTela);
+                printf("------------------------- [CONCURSO %d] --------------------------", concursos[l].idConc);
+                linhasNaTela++;
+                gotoxy(44, t + linhasNaTela);
+                printf("Apostadores que fizeram terno:");
+                linhasNaTela += 2;
+                textcolor(cor - 1);
+                for (i = 0; i < tla; i++)
+                {
+                    if (concursos[l].idConc == apostas[i].idConc)
                     {
-                        gotoxy(44, t + 6);
-                        printf("Nenhum apostador foi premiado neste concurso!");
+                        textcolor(cor);
+                        gotoxy(12, 13);
+                        printf("CONCURSO: %d", concursos[l].idConc);
+                        gotoxy(12, 15);
+                        printf("Qtd. apostador com terno:");
+                        gotoxy(12, 16);
+                        printf("%d apostadores", apostas[i].qtdeTernos);
+                        gotoxy(12, 18);
+                        printf("Qtd. de apostador com quadra:");
+                        gotoxy(12, 19);
+                        printf("%d apostadores", apostas[i].qtdeQuadras);
+                        gotoxy(12, 21);
+                        printf("Qtd. apostador com quina:");
+                        gotoxy(12, 22);
+                        printf("%d apostadores", apostas[i].qtdeQuinas);
                     }
+                }
+
+                textcolor(cor - 1);
+                for (i = 0; i < tla; i++)
+                {
+                    if (apostas[i].qtdeNumAcertado == 3 && concursos[l].idConc == apostas[i].idConc)
+                    {
+                        if (linhasNaTela + 1 > 29)
+                            limparRelatorio(linhasNaTela, cor, t);
+                        gotoxy(44, t + linhasNaTela);
+                        printf("ID da aposta: %d", apostas[i].idAposta);
+                        linhasNaTela++;
+                        if (linhasNaTela + 1 > 29)
+                            limparRelatorio(linhasNaTela, cor, t);
+                        gotoxy(44, t + linhasNaTela);
+                        printf("CPF do apostador: %s", apostas[i].CPF);
+                        linhasNaTela++;
+                        if (linhasNaTela + 1 > 29)
+                            limparRelatorio(linhasNaTela, cor, t);
+                        gotoxy(44, t + linhasNaTela);
+                        printf("Numeros acertados:");
+                        for (int j = 0, espaco = 0; j < apostas[i].qtdeNumAcertado; j++, espaco += 4)
+                        {
+                            gotoxy(63 + espaco, linhasNaTela + t);
+                            printf("[%d] ", apostas[i].numAcertado[j]);
+                        }
+                        linhasNaTela += 2;
+                        cont++;
+                    }
+                }
+
+                if (cont == 0)
+                {
+                    if (linhasNaTela + 1 > 29)
+                        limparRelatorio(linhasNaTela, cor, t);
+                    gotoxy(44, t + linhasNaTela);
+                    printf("Nenhum apostador acertou um terno neste concurso!");
+                    linhasNaTela += 2;
+                }
+
+                cont = 0;
+
+                textcolor(cor);
+                if (linhasNaTela + 2 > 29)
+                    limparRelatorio(linhasNaTela, cor, t);
+                gotoxy(44, t + linhasNaTela);
+                printf("------------------------------------------------------------------");
+                linhasNaTela++;
+                if (linhasNaTela + 1 > 29)
+                    limparRelatorio(linhasNaTela, cor, t);
+                gotoxy(44, t + linhasNaTela);
+                printf("Apostadores que fizeram quadra:");
+                linhasNaTela += 2;
+                textcolor(cor - 1);
+                for (i = 0; i < tla; i++)
+                {
+                    if (apostas[i].qtdeNumAcertado == 4 && concursos[l].idConc == apostas[i].idConc)
+                    {
+                        if (linhasNaTela + 1 > 29)
+                            limparRelatorio(linhasNaTela, cor, t);
+                        gotoxy(44, t + linhasNaTela);
+                        printf("ID da aposta: %d", apostas[i].idAposta);
+                        linhasNaTela++;
+                        if (linhasNaTela + 1 > 29)
+                            limparRelatorio(linhasNaTela, cor, t);
+                        gotoxy(44, t + linhasNaTela);
+                        printf("CPF do apostador: %s", apostas[i].CPF);
+                        linhasNaTela++;
+                        if (linhasNaTela + 1 > 29)
+                            limparRelatorio(linhasNaTela, cor, t);
+                        gotoxy(44, t + linhasNaTela);
+                        printf("Numeros acertados:");
+                        for (int j = 0, espaco = 0; j < apostas[i].qtdeNumAcertado; j++, espaco += 4)
+                        {
+                            gotoxy(63 + espaco, t + linhasNaTela);
+                            printf("[%d] ", apostas[i].numAcertado[j]);
+                        }
+                        linhasNaTela += 2;
+                        cont++;
+                    }
+                }
+
+                if (cont == 0)
+                {
+                    if (linhasNaTela + 1 > 29)
+                        limparRelatorio(linhasNaTela, cor, t);
+                    gotoxy(44, t + linhasNaTela);
+                    printf("Nenhum apostador acertou uma quadra neste concurso!");
+                    linhasNaTela += 2;
+                }
+
+                cont = 0;
+
+                textcolor(cor);
+                if (linhasNaTela + 2 > 29)
+                    limparRelatorio(linhasNaTela, cor, t);
+                gotoxy(44, t + linhasNaTela);
+                printf("------------------------------------------------------------------");
+                linhasNaTela++;
+                if (linhasNaTela + 1 > 29)
+                    limparRelatorio(linhasNaTela, cor, t);
+                gotoxy(44, t + linhasNaTela);
+                printf("Apostadores que fizeram quina:");
+                linhasNaTela += 2;
+                textcolor(cor - 1);
+                for (i = 0; i < tla; i++)
+                {
+                    if (apostas[i].qtdeNumAcertado == 5 && concursos[l].idConc == apostas[i].idConc)
+                    {
+                        if (linhasNaTela + 1 > 29)
+                            limparRelatorio(linhasNaTela, cor, t);
+                        gotoxy(44, t + linhasNaTela);
+                        printf("ID da aposta: %d", apostas[i].idAposta);
+                        linhasNaTela++;
+                        if (linhasNaTela + 1 > 29)
+                            limparRelatorio(linhasNaTela, cor, t);
+                        gotoxy(44, t + linhasNaTela);
+                        printf("CPF do apostador: %s", apostas[i].CPF);
+                        linhasNaTela++;
+                        if (linhasNaTela + 1 > 29)
+                            limparRelatorio(linhasNaTela, cor, t);
+                        gotoxy(44, t + linhasNaTela);
+                        printf("Numeros acertados:");
+                        for (int j = 0, espaco = 0; j < apostas[i].qtdeNumAcertado; j++, espaco += 4)
+                        {
+                            gotoxy(63 + espaco, t + linhasNaTela);
+                            printf("[%d] ", apostas[i].numAcertado[j]);
+                        }
+                        linhasNaTela += 2;
+                        cont++;
+                    }
+                }
+                if (cont == 0)
+                {
+                    if (linhasNaTela + 1 > 29)
+                        limparRelatorio(linhasNaTela, cor, t);
+                    gotoxy(44, t + linhasNaTela);
+                    printf("Nenhum apostador acertou uma quina neste concurso!");
+                    linhasNaTela += 2;
+                }
+
+                cor--;
+            }
+            limparRelatorio(linhasNaTela, cor, t);
+            limparPainel(12, 13, 41, 24);
         }
     }
+}
+
+void relatorioQtdAcerto(typeConcurso concursos[TF], int tl, typeAposta apostas[TF], int tla, int qtdeApurado)
+{
+    int auxNum;
+    textcolor(13);
+    gotoxy(44,4);
+    printf("--------------- Relatorio por quantidade de acerto ---------------");
+    if (qtdeApurado == 0)
+        msgErro("Ate o momento, nenhum concurso foi apurado!", 6);
+    else
+    {
+        printf("Digite a quantidade de numeros acertados: ");
+        scanf("%d",&auxNum);
+    }
+        
     getch();
 }
 
@@ -1333,7 +1578,7 @@ int main(void)
     do
     {
 
-        opcao = menuInicial();
+        opcao = menuInicial(numSorteio, dadoSorteio, numAposta, dadoAposta);
         switch (opcao)
         {
         case 'A':
@@ -1414,15 +1659,15 @@ int main(void)
                 switch (subOpcao)
                 {
                 case 'A':
-                    relatorioGanhadores(concursos, tlc, apostas, tla);
+                    relatorioGanhadores(concursos, tlc, apostas, tla, dadoSorteio);
                     break;
 
                 case 'B':
-
+                    relatorioQtdAcerto(concursos, tlc, apostas, tla, dadoSorteio);
                     break;
 
                 case 'C':
-                    relatorioNumSorteio(numSorteio, dadoSorteio);
+
                     break;
 
                 case 'D':
