@@ -765,7 +765,7 @@ void cadastroApostas(typeAposta apostas[TF], int &tl, typeConcurso concursos[TF]
                         pos = achouConcurso(concursos, tlc, auxConc);
                         if (pos != -1)
                         {
-                            if (concursos[pos].status == 1)
+                            if (concursos[pos].status != 1)
                             {
                                 concursos[pos].jaFoiApostado = 1;
                                 int qtde, cod = 0;
